@@ -19,7 +19,7 @@ class AlphaMonitor:
         self.query_count += 1
         
         # Fetch active markets
-        markets = self.client.get_markets(limit=50)
+        markets = self.client.get_markets(limit=100)
         if not markets:
             print("No markets fetched.")
             return
@@ -28,16 +28,13 @@ class AlphaMonitor:
         
         findings = []
         for market in markets:
-            market_id = market.get("id")
-            
-            # Fetch trades for this market
-            trades = self.client.get_trades(market_id, limit=30)
-            
-            # Analyze
-            market_findings = self.analyzer.analyze_market(market, trades)
+            # Analyze market data directly (prices, status, etc)
+            # Don't need to fetch trades separately if prices are in market data
+            market_findings = self.analyzer.analyze_market(market, [])
             if market_findings:
                 findings.extend(market_findings)
-                print(f"  → {market_id}: {len(market_findings)} findings")
+                condition_id = market.get("condition_id", "unknown")
+                print(f"  → {condition_id[:16]}...: {len(market_findings)} findings")
         
         if findings:
             self.findings_log.extend(findings)

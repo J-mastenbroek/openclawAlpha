@@ -21,7 +21,14 @@ class PolymarketClient:
                 timeout=10
             )
             resp.raise_for_status()
-            return resp.json()
+            data = resp.json()
+            # API returns dict with markets list or direct list
+            if isinstance(data, dict) and 'data' in data:
+                return data['data']
+            elif isinstance(data, list):
+                return data
+            else:
+                return data if isinstance(data, list) else []
         except Exception as e:
             print(f"Error fetching markets: {e}")
             return []

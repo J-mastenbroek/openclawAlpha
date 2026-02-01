@@ -10,90 +10,105 @@ class MarketAnalyzer:
     
     def detect_settlement_misprice(self, market: Dict) -> Optional[Dict]:
         """
-        Detect if a settled/resolving market has mispriced outcomes.
-        Settlement arbitrage: catch the cleanup phase where prices haven't synced.
+        Detect if a closed market has mispriced outcomes.
+        Settlement arbitrage: catch markets with inefficient pricing.
         """
-        if market.get("status") != "resolved":
+        if not market.get("closed"):
             return None
         
-        # Check if there are still active orders at stale prices
-        resolved_outcome = market.get("resolvedOutcome")
-        if not resolved_outcome:
+        # Look for markets that just closed but still accepting orders (lag)
+        tokens = market.get("tokens", [])
+        if len(tokens) < 2:
             return None
         
-        # Quick heuristic: if winning outcome still has losers at >10% odds
-        # that's inefficient cleanup phase
-        outcome_prices = market.get("outcomeTokens", {})
+        # Check outcome token prices
+        prices = [float(t.get("price", 0)) for t in tokens]
         
-        for outcome_id, price in outcome_prices.items():
-            if outcome_id != resolved_outcome and float(price) > 0.1:
-                return {
-                    "type": "settlement_misprice",
-                    "market_id": market.get("id"),
-                    "resolved_outcome": resolved_outcome,
-                    "stale_price": float(price),
-                    "stale_outcome": outcome_id,
-                    "timestamp": datetime.now().isoformat()
-                }
+        # If winner marked but other outcomes still have significant price, inefficient
+        for i, token in enumerate(tokens):
+            if token.get("winner"):  # This is the resolved outcome
+                # Check if losers still have >5% price
+                for j, other_token in enumerate(tokens):
+                    if i != j and float(other_token.get("price", 0)) > 0.05:
+                        return {
+                            "type": "settlement_misprice",
+                            "market_id": market.get("condition_id"),
+                            "winner": token.get("outcome"),
+                            "stale_loser": other_token.get("outcome"),
+                            "stale_price": float(other_token.get("price", 0)),
+                            "timestamp": datetime.now().isoformat()
+                        }
         
         return None
     
     def detect_retail_flow(self, trades: List[Dict], market: Dict) -> Optional[Dict]:
         """
-        Detect retail flow patterns: small, frequent orders from many addresses.
+        Detect retail flow patterns: markets with many small bets.
+        Use volume and minimum order size as proxy.
         """
-        if not trades:
+        # Look for markets actively trading (accepting orders) with low minimums
+        if not market.get("accepting_orders"):
             return None
         
-        # Retail signature: many small orders, rapid succession
-        order_sizes = [float(t.get("size", 0)) for t in trades]
-        order_count = len(trades)
+        min_order = market.get("minimum_order_size", 15)
         
-        if order_count < 5:
-            return None
-        
-        avg_size = sum(order_sizes) / order_count
-        
-        # Heuristic: if average order <$100 and many orders, likely retail
-        if avg_size < 100 and order_count > 10:
-            return {
-                "type": "retail_flow_detected",
-                "market_id": market.get("id"),
-                "order_count": order_count,
-                "avg_order_size": avg_size,
-                "total_volume": sum(order_sizes),
-                "timestamp": datetime.now().isoformat()
-            }
+        # If minimum order is very low, indicates retail-friendly market
+        # Combined with active trading = potential retail flow
+        if min_order <= 10 and market.get("active"):
+            volume_proxy = len(market.get("tokens", []))  # proxy for activity
+            
+            # Check spread (bid-ask like behavior)
+            tokens = market.get("tokens", [])
+            if len(tokens) == 2:
+                price_diff = abs(float(tokens[0].get("price", 0.5)) - 0.5)
+                
+                # Tight markets around 50-50 with low minimums = retail arbing
+                if price_diff < 0.15 and min_order < 10:
+                    return {
+                        "type": "retail_flow_detected",
+                        "market_id": market.get("condition_id"),
+                        "min_order_size": min_order,
+                        "price_proximity_to_50": price_diff,
+                        "timestamp": datetime.now().isoformat()
+                    }
         
         return None
     
     def detect_price_momentum(self, market: Dict, recent_trades: List[Dict]) -> Optional[Dict]:
         """
-        Detect price momentum: if price has moved significantly in one direction.
+        Detect price imbalance: if one outcome is significantly more expensive.
+        Indicates strong directional bias.
         """
-        if not recent_trades or len(recent_trades) < 2:
+        tokens = market.get("tokens", [])
+        if len(tokens) < 2:
             return None
         
-        # Get directional bias from recent trades
-        yes_trades = sum(1 for t in recent_trades if t.get("side") == "yes")
-        no_trades = len(recent_trades) - yes_trades
+        # Get prices for binary market
+        if len(tokens) == 2:
+            price1 = float(tokens[0].get("price", 0.5))
+            price2 = float(tokens[1].get("price", 0.5))
+            
+            # Extreme prices (>70% or <30%) indicate strong momentum
+            if price1 > 0.70:
+                return {
+                    "type": "price_momentum",
+                    "market_id": market.get("condition_id"),
+                    "momentum": "bullish_outcome_1",
+                    "price": price1,
+                    "outcome": tokens[0].get("outcome"),
+                    "timestamp": datetime.now().isoformat()
+                }
+            elif price1 < 0.30:
+                return {
+                    "type": "price_momentum",
+                    "market_id": market.get("condition_id"),
+                    "momentum": "bullish_outcome_2",
+                    "price": price1,
+                    "outcome": tokens[1].get("outcome"),
+                    "timestamp": datetime.now().isoformat()
+                }
         
-        if yes_trades > no_trades * 1.5:
-            momentum = "bullish_yes"
-            ratio = yes_trades / len(recent_trades)
-        elif no_trades > yes_trades * 1.5:
-            momentum = "bullish_no"
-            ratio = no_trades / len(recent_trades)
-        else:
-            return None
-        
-        return {
-            "type": "price_momentum",
-            "market_id": market.get("id"),
-            "momentum": momentum,
-            "directional_ratio": ratio,
-            "timestamp": datetime.now().isoformat()
-        }
+        return None
     
     def analyze_market(self, market: Dict, trades: List[Dict]) -> List[Dict]:
         """Run all analyses on a market."""
