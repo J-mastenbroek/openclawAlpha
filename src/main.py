@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 from src.polymarket import PolymarketClient
 from src.analysis import MarketAnalyzer
+from src.filter import SignalFilter
 
 class AlphaMonitor:
     def __init__(self):
@@ -44,10 +45,15 @@ class AlphaMonitor:
     
     def report_findings(self, findings: list):
         """Generate report of findings."""
+        # Filter for quality signals
+        high_quality = SignalFilter.filter_signals(findings, min_score=0.7)
+        deduplicated = SignalFilter.deduplicate_signals(high_quality)
+        
         report = {
             "timestamp": datetime.now().isoformat(),
-            "finding_count": len(findings),
-            "findings": findings,
+            "total_signals": len(findings),
+            "high_quality": len(deduplicated),
+            "signals": deduplicated[:10],  # Top 10 only
             "total_queries": self.query_count
         }
         
@@ -56,9 +62,18 @@ class AlphaMonitor:
             f.write(json.dumps(report) + "\n")
         
         # Print summary
-        print(f"\n📊 FINDINGS ({len(findings)} signals):")
-        for f in findings:
-            print(f"  - {f['type']}: {f.get('market_id')}")
+        print(f"\n📊 FINDINGS Summary:")
+        print(f"  Total signals: {len(findings)}")
+        print(f"  High quality (score>0.7): {len(deduplicated)}")
+        
+        if deduplicated:
+            print(f"\n🎯 Top signals:")
+            for sig in deduplicated[:5]:
+                score = sig.get("_score", 0)
+                sig_type = sig.get("type")
+                outcome = sig.get("outcome", "N/A")
+                price = sig.get("price", "N/A")
+                print(f"  [{score:.2f}] {sig_type}: {outcome} @ {price}")
 
 if __name__ == "__main__":
     monitor = AlphaMonitor()
