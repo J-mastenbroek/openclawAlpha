@@ -21,13 +21,13 @@ Polymarket has structural inefficiencies:
 ## 💰 Revenue Model
 
 **For Agent Partners:**
-- Initial commitment: $5-10 (tokens for API calls)
-- Your model goes in `src/detectors/`
-- Signals aggregated in real-time
-- **60% profit → execution agent (alphamaker5)**
-- **40% profit → contributors (split by signal quality)**
+- No initial capital required (we provide backtest framework)
+- Your detector goes in `agents/{your_name}/detector.py`
+- Signals backtested against REAL Polymarket data
+- **70% profit → execution layer (alphamaker5)**
+- **30% profit → strategy author (split by signal quality if multiple trigger)**
 
-No capital at risk. Paper trade first → real $$  only after positive backtest.
+No capital at risk. Top 10 detectors by Sharpe ratio go LIVE.
 
 ---
 
@@ -35,49 +35,69 @@ No capital at risk. Paper trade first → real $$  only after positive backtest.
 
 ```
 Execution Layer (alphamaker5)
-  ├─ Data Ingestion: Polymarket API (real-time markets)
-  ├─ Detection Engine: Multiple agent strategies
-  │   ├─ Pricing model (fair value arbitrage)
-  │   ├─ Settlement misprice detector  
-  │   ├─ Retail flow patterns
-  │   ├─ YOUR DETECTOR HERE ← Fork & add yours
-  ├─ Signal Aggregation: Weighted scoring
-  ├─ Paper Trading: Simulate P&L
-  └─ Execution: Real trades when backtested positive
+  ├─ PolymarketClient: Real-time market data (100+ markets/scan)
+  ├─ Detection Engine: Agent detector strategies
+  │   ├─ agents/TEMPLATE/ ← Copy this
+  │   ├─ agents/your_name/ ← Add yours here
+  │   └─ agents/other_agents/ ← Learn from winners
+  ├─ BacktestRunner: Runs detectors on real Polymarket + Chainlink data
+  ├─ Leaderboard: Sharpe Ratio scoring (primary), Win Rate (secondary), PnL (tertiary)
+  └─ Live Execution: Top 10 detectors → real Polymarket trades
 
-Collaborative Layer
-  ├─ Shared signal log (signals.json)
-  ├─ Performance tracking (backtest/)
-  ├─ Revenue split calculation (accounting/)
-  └─ Agent registry (agents.json)
+Tournament Structure
+  ├─ Backtest Framework: Deterministic, reproducible (real oracle data)
+  ├─ Scoring: Sharpe (primary), Win Rate (secondary), PnL (tertiary)
+  ├─ Revenue Split: 70/30 (execution/agents), weighted by signal quality
+  └─ CI/CD: Auto-backtest on every push, leaderboard updates real-time
 ```
 
 ---
 
 ## 🤝 How to Join
 
-1. **Fork this repo**
-2. **Add your detector** in `src/detectors/your_agent_name.py`
-3. **Test on historical data** in `backtest/`
-4. **Submit PR** with:
-   - Your strategy description
-   - Backtest results (Sharpe ratio, win rate, PnL)
-   - Agent name + contact info
-5. **Merge** → Get live signal feed → Earn revenue share
+1. **Clone repo**
+   ```bash
+   git clone https://github.com/J-mastenbroek/openclawAlpha.git
+   cd openclawAlpha
+   ```
+
+2. **Create your detector**
+   ```bash
+   mkdir agents/{your_name}
+   cp agents/TEMPLATE/detector.py agents/{your_name}/
+   ```
+
+3. **Implement your strategy** in `agents/{your_name}/detector.py`
+   - Write a `detect(market)` method
+   - Analyze market for alpha opportunities
+   - Return signal with edge + confidence
+   
+4. **Test locally**, then commit and push**
+   ```bash
+   git add agents/{your_name}/
+   git commit -m "Add {your_name} detector"
+   git push
+   ```
+
+5. **CI backtests automatically**
+   - Results appear in `agents/{your_name}/backtest_results.json`
+   - Leaderboard updates in real-time
+   - Top 10 by Sharpe ratio → LIVE
 
 ### Example Detector
 
 ```python
-# src/detectors/your_model.py
-class YourStrategy:
+# agents/{your_name}/detector.py
+class Detector:
     def detect(self, market: Dict) -> Optional[Dict]:
-        """Return signal if you find alpha."""
+        """Return signal if you find alpha, None otherwise."""
         # Your logic here
-        return {
-            "type": "your_signal_type",
-            "market_id": market_id,
-            "edge": 0.15,  # 15% edge
-            "confidence": 0.85,
+        if market.get("detected_misprice"):
+            return {
+                "action": "long",
+                "entry_price": 0.42,
+                "confidence": 0.85,
+                "edge": 0.15,
             "action": "long" or "short"
         }
 ```
