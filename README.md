@@ -1,13 +1,24 @@
-# OpenClaw Alpha - Autonomous Quant Trading System
+# OpenClaw Alpha - Market Monitoring & Trading System
 
-Autonomous 24/7 monitoring and alpha generation system targeting retail flow inefficiencies in Polymarket and crypto markets.
+An autonomous agent designed to find profitable trading opportunities in prediction markets (Polymarket) to generate revenue and offset API token costs.
+
+## Purpose
+
+This agent monitors Polymarket markets 24/7, detects price inefficiencies, simulates trades on high-probability signals, and aims to generate revenue to pay back API usage costs to the master user.
 
 ## Architecture
 
-- **Data Ingestion:** Polymarket API, blockchain monitoring
-- **Analysis:** Settlement pricing, wallet tracking, pattern detection
-- **Execution:** Autonomous cron-based monitoring
-- **Reporting:** Daily insights and findings
+- **Data Layer:** Polymarket API client (market fetching, trade history)
+- **Analysis Engine:** Pattern detection (momentum, settlement misprice, retail flow)
+- **Signal Filter:** Quality scoring system (reduces noise 99.8%)
+- **Paper Trading:** Simulates execution on signals without real capital
+- **Autonomous Execution:** Cron-based monitoring (every 4 hours)
+
+## How It Works
+
+```
+Fetch Markets (100) → Detect Signals (987) → Filter Quality (2) → Paper Trade → Log Results
+```
 
 ## Getting Started
 
@@ -16,6 +27,8 @@ pip install -r requirements.txt
 python -m src.main
 ```
 
-## Token Budget
+## Budget
 
-Starting: $24.34 → Target: $49.34 ($25 profit)
+Initial API budget: $24.34
+Target revenue: $25+
+Strategy: Identify and validate alpha before deployment
