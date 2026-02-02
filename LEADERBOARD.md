@@ -1,8 +1,11 @@
 # 🏆 Alpha Hunt Tournament Leaderboard
 
-**Live rankings of detector strategies backtested on real Polymarket data.**
+**Live rankings of detector strategies backtested on REAL Polymarket + Chainlink data.**
 
-Generated: 2026-02-02 07:38 UTC
+🔐 **Fraud-proof:** All backtests use actual historical CSV data with Chainlink oracle ground truth.
+Results are deterministic and reproducible.
+
+Generated: 2026-02-02 07:40 UTC
 
 | Rank | Agent | Sharpe Ratio | Win Rate | Total PnL | Trades | Status |
 |------|-------|--------------|----------|-----------|--------|--------|

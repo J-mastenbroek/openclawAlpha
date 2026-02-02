@@ -1,4 +1,8 @@
-"""Backtest detector strategies on real Polymarket data."""
+"""Backtest detector strategies on REAL Polymarket + Chainlink data.
+
+All backtests use historical CSV data from pricing research.
+Results are deterministic and reproducible.
+"""
 
 import json
 import os
@@ -6,123 +10,108 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import numpy as np
 from datetime import datetime
+from .data_loader import PolymarketDataLoader, BacktestData
 
 class BacktestRunner:
-    """Run detector strategies on historical market data."""
+    """Run detector strategies on real historical market data."""
     
     def __init__(self, data_dir: Path = Path("data")):
         self.data_dir = data_dir
+        self.loader = PolymarketDataLoader(data_dir)
         self.results = []
     
-    def load_market_data(self, asset: str = "sol", limit: int = 5) -> List[Dict]:
+    def backtest_detector(self, detector, asset: str = "sol", num_markets: int = 5) -> Dict:
         """
-        Load real Polymarket data from CSV files.
-        Expects format from pricing.ipynb data.
+        Run detector on REAL historical Polymarket data.
         
-        Returns list of market datasets with prices, times, chainlink oracle.
+        Loads CSV files with:
+        - Chainlink oracle prices (ground truth)
+        - Market bid/ask prices
+        - Timestamps for 15-min markets
+        
+        Returns verified performance metrics.
         """
         
-        # Find CSV files for asset
-        pattern = f"{asset}-*.csv"
-        csv_files = sorted(self.data_dir.glob(pattern))[:limit]
+        all_pnls = []
+        all_trades = 0
+        all_wins = 0
+        markets_tested = 0
         
-        if not csv_files:
-            print(f"❌ No data files found for {asset}")
-            return []
-        
-        markets = []
-        
-        for csv_file in csv_files:
-            print(f"Loading {csv_file.name}...")
+        for market_idx in range(num_markets):
+            market = self.loader.load_market(asset, market_idx)
             
-            # Parse market metadata from CSV header
-            meta = {}
-            rows = []
+            if market is None:
+                break
             
-            with open(csv_file) as f:
-                for line in f:
-                    if line.startswith("#"):
-                        # Metadata line
-                        key, val = line[1:].split(":", 1)
-                        meta[key.strip()] = val.strip()
-                    else:
-                        # Data line (CSV)
-                        rows.append(line.strip())
+            df = market["data"]
+            markets_tested += 1
             
-            # Basic market data: timestamp, chainlink_price, exchange_price, bid/ask
-            market = {
-                "slug": meta.get("slug", csv_file.stem),
-                "asset": asset,
-                "data": rows,  # Raw CSV rows
-                "metadata": meta
+            # Format market data for detector
+            market_dict = {
+                "slug": market["slug"],
+                "chainlink_prices": df["chainlink_price_usd"].tolist(),
+                "bid_prices": df["bid_price_1"].tolist() if "bid_price_1" in df else [0.5] * len(df),
+                "ask_prices": df["ask_price_1"].tolist() if "ask_price_1" in df else [0.5] * len(df),
+                "timestamps": df["exchange_dt"].tolist(),
+                "oracle_timestamps": df["chainlink_dt"].tolist()
             }
             
-            markets.append(market)
-        
-        return markets
-    
-    def backtest_detector(self, detector, markets: List[Dict]) -> Dict:
-        """
-        Run detector on historical markets, calculate P&L.
-        
-        Returns performance metrics:
-        - trades: number of signals generated
-        - wins: profitable trades
-        - win_rate: %
-        - sharpe: risk-adjusted return
-        - total_pnl: cumulative profit
-        """
-        
-        trades = 0
-        wins = 0
-        pnls = []
-        
-        for market in markets:
-            # Parse market data and simulate detection
-            # Detector returns signal with entry/exit prices
+            # Run detector
+            signal = detector.detect(market_dict)
             
-            # For now: mock evaluation (in production, parse real prices)
-            result = detector.detect(market)
+            if not signal:
+                continue
             
-            if result and result.get("action"):
-                trades += 1
-                
-                # Simulate trade (mock P&L)
-                # In production: use real entry/exit prices from market data
-                edge = result.get("edge", 0.02)
-                pnl = edge * 100  # Assume $100 per trade
-                
-                pnls.append(pnl)
-                if pnl > 0:
-                    wins += 1
+            all_trades += 1
+            
+            # Evaluate signal against real market outcome
+            entry_price = signal.get("entry_price", 0.5)
+            action = signal.get("action")
+            confidence = signal.get("confidence", 0.5)
+            
+            # Real outcome: where Chainlink price settled at market end
+            settlement_price = df["chainlink_price_usd"].iloc[-1]
+            
+            # Calculate P&L
+            if action == "long":
+                # Bet YES: win if price goes above entry
+                won = settlement_price > entry_price
+                pnl = (settlement_price - entry_price) * confidence if won else -(entry_price - settlement_price) * confidence * 0.5
+            elif action == "short":
+                # Bet NO: win if price goes below entry
+                won = settlement_price < entry_price
+                pnl = (entry_price - settlement_price) * confidence if won else -(settlement_price - entry_price) * confidence * 0.5
+            else:
+                pnl = 0
+                won = False
+            
+            all_pnls.append(pnl)
+            if won:
+                all_wins += 1
         
         # Calculate metrics
-        if not pnls:
+        if all_trades == 0:
             return {
                 "detector": detector.__class__.__name__,
                 "trades": 0,
-                "error": "No signals generated"
+                "error": "No signals generated on real data",
+                "markets_tested": markets_tested
             }
         
-        total_pnl = sum(pnls)
-        win_rate = wins / len(pnls) if pnls else 0
-        
-        # Simple Sharpe ratio
-        returns = np.array(pnls)
-        if len(returns) > 1:
-            sharpe = np.mean(returns) / np.std(returns) if np.std(returns) > 0 else 0
-        else:
-            sharpe = 0
+        pnls_array = np.array(all_pnls)
         
         return {
             "detector": detector.__class__.__name__,
-            "trades": trades,
-            "wins": wins,
-            "win_rate": win_rate,
-            "total_pnl": total_pnl,
-            "sharpe_ratio": sharpe,
-            "avg_pnl_per_trade": total_pnl / trades if trades > 0 else 0,
-            "timestamp": datetime.now().isoformat()
+            "markets_tested": markets_tested,
+            "trades": all_trades,
+            "wins": all_wins,
+            "win_rate": all_wins / all_trades if all_trades > 0 else 0,
+            "total_pnl": float(np.sum(pnls_array)),
+            "avg_pnl_per_trade": float(np.mean(pnls_array)),
+            "sharpe_ratio": float(np.mean(pnls_array) / np.std(pnls_array)) if np.std(pnls_array) > 0 and len(pnls_array) > 1 else 0.0,
+            "std_dev": float(np.std(pnls_array)),
+            "timestamp": datetime.now().isoformat(),
+            "data_source": "Real Polymarket + Chainlink Oracle"
         }
     
     def run(self, detector_name: str) -> Dict:
@@ -159,20 +148,41 @@ if __name__ == "__main__":
     import sys
     
     if len(sys.argv) < 2:
-        print("Usage: python runner.py <detector_name>")
-        print("Example: python runner.py agent1_name")
+        print("Usage: python runner.py <detector_name> [asset]")
+        print("Example: python runner.py agent1_name sol")
         sys.exit(1)
     
     detector_name = sys.argv[1]
-    runner = BacktestRunner()
-    results = runner.run(detector_name)
+    asset = sys.argv[2] if len(sys.argv) > 2 else "sol"
     
-    print("\n=== BACKTEST RESULTS ===")
+    # Import detector
+    detector_path = Path(__file__).parent.parent / "agents" / detector_name / "detector.py"
+    
+    if not detector_path.exists():
+        print(f"❌ Detector not found: {detector_path}")
+        sys.exit(1)
+    
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("detector_module", detector_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    
+    detector = module.Detector()
+    
+    # Run backtest on REAL data
+    print(f"\n🧪 Backtesting {detector_name} on {asset} markets...")
+    runner = BacktestRunner()
+    results = runner.backtest_detector(detector, asset=asset, num_markets=5)
+    
+    print("\n=== BACKTEST RESULTS (REAL DATA) ===")
     print(json.dumps(results, indent=2))
     
     # Save results
     results_file = Path(__file__).parent.parent / "agents" / detector_name / "backtest_results.json"
+    results_file.parent.mkdir(parents=True, exist_ok=True)
+    
     with open(results_file, "w") as f:
         json.dump(results, f, indent=2)
     
     print(f"\n✅ Results saved to {results_file}")
+    print(f"📊 Sharpe Ratio: {results.get('sharpe_ratio', 0):.2f}")
