@@ -1,8 +1,12 @@
 <!DOCTYPE html>
+<!-- Polyberg v3 - 2026-02-03 18:25 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Polyberg - Professional Polymarket Terminal</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -250,11 +254,12 @@
 
         async function load() {
             try {
-                // Fetch all data
+                // Fetch all data with cache buster
+                const ts = Date.now();
                 const [mkt, news, whl] = await Promise.all([
-                    fetch('./data/live_data.json').then(r => r.json()),
-                    fetch('./data/news.json').then(r => r.json()).catch(() => ({ articles: [] })),
-                    fetch('./data/whales.json').then(r => r.json()).catch(() => ({ top_whales: [] }))
+                    fetch(`./data/live_data.json?v=${ts}`).then(r => r.json()),
+                    fetch(`./data/news.json?v=${ts}`).then(r => r.json()).catch(() => ({ articles: [] })),
+                    fetch(`./data/whales.json?v=${ts}`).then(r => r.json()).catch(() => ({ top_whales: [] }))
                 ]);
 
                 data.markets = mkt.markets || [];
