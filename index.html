@@ -13,415 +13,332 @@
         
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f5f5;
+            background: #f8f9fa;
             color: #333;
         }
         
         .header {
             background: #fff;
-            border-bottom: 2px solid #000;
-            padding: 12px 20px;
+            border-bottom: 3px solid #000;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
         }
         
         .branding {
             font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 1px;
+            font-size: 16px;
+            letter-spacing: 2px;
         }
         
-        .bloomberg {
-            color: #FFB81C;
-        }
-        
-        .divider {
-            color: #999;
-        }
-        
-        .polymarket {
-            color: #000;
-        }
+        .bloomberg { color: #FFB81C; }
+        .divider { color: #999; margin: 0 8px; }
+        .polymarket { color: #000; }
         
         .status {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 11px;
+            gap: 8px;
+            font-size: 12px;
             color: #666;
         }
         
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: #00aa00;
-            animation: pulse 1.5s infinite;
+            background: #10b981;
+            animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.7; }
         }
         
         .container {
             display: grid;
-            grid-template-columns: 1fr 2fr 1.5fr;
-            gap: 0;
-            height: calc(100vh - 60px);
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            padding: 24px;
+            height: calc(100vh - 80px);
         }
         
-        .section {
-            border-right: 1px solid #ddd;
+        .box {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        
+        .box-header {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 16px;
+            font-weight: bold;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+        }
+        
+        .box-content {
+            flex: 1;
             overflow-y: auto;
             padding: 0;
         }
         
-        .section:last-child {
-            border-right: none;
-        }
-        
-        .section-header {
-            background: #f9f9f9;
-            border-bottom: 1px solid #ddd;
+        .search-box {
             padding: 12px 16px;
-            font-weight: bold;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #666;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            border-bottom: 1px solid #e5e7eb;
         }
         
-        .news-feed {
-            padding: 0;
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 13px;
         }
         
+        /* NEWS BOX */
         .news-item {
             padding: 12px 16px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f3f4f6;
             cursor: pointer;
             transition: background 0.2s;
         }
         
         .news-item:hover {
-            background: #f0f0f0;
+            background: #f3f4f6;
         }
         
         .news-item.active {
-            background: #fff3e0;
-            border-left: 3px solid #FFB81C;
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding-left: 12px;
         }
         
         .news-time {
             font-size: 11px;
-            color: #999;
+            color: #9ca3af;
             margin-bottom: 4px;
         }
         
         .news-title {
             font-size: 13px;
             font-weight: 600;
-            color: #333;
+            color: #1f2937;
             margin-bottom: 4px;
+            line-height: 1.4;
         }
         
         .news-source {
             font-size: 11px;
-            color: #666;
+            color: #6b7280;
         }
         
-        .news-detail {
-            padding: 16px;
-            border-bottom: 1px solid #ddd;
-            min-height: 200px;
-        }
-        
-        .detail-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            color: #333;
-        }
-        
-        .detail-source {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 16px;
-        }
-        
-        .detail-content {
-            font-size: 13px;
-            line-height: 1.6;
-            color: #555;
-            margin-bottom: 16px;
-        }
-        
-        .markets-affected {
-            border-top: 1px solid #ddd;
-            padding-top: 12px;
-        }
-        
+        /* MARKETS BOX */
         .market-item {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 2px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 12px;
+        }
+        
+        .market-item:hover {
+            background: #f9fafb;
         }
         
         .market-name {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .market-price {
-            color: #0066cc;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-        }
-        
-        .market-info {
-            font-size: 11px;
-            color: #999;
-            margin-top: 4px;
-        }
-        
-        .market-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0;
-            padding: 0;
-        }
-        
-        .market-card {
-            padding: 12px 16px;
-            border-bottom: 1px solid #eee;
-            border-right: 1px solid #eee;
-        }
-        
-        .market-pair {
-            font-size: 12px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 6px;
+            flex: 1;
+            font-weight: 500;
+            color: #1f2937;
+            margin-right: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         
-        .price-row {
+        .market-price {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .price-bid {
+            color: #059669;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .price-ask {
+            color: #dc2626;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .price-vol {
+            color: #6b7280;
+            font-size: 11px;
+        }
+        
+        /* WHALES BOX */
+        .whale-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
         }
         
-        .price-label {
+        .whale-item:hover {
+            background: #f3f4f6;
+        }
+        
+        .whale-wallet {
+            background: #fef3c7;
+            color: #b45309;
+            padding: 4px 8px;
+            border-radius: 4px;
             font-size: 11px;
-            color: #666;
-        }
-        
-        .price {
-            font-family: 'Courier New', monospace;
             font-weight: bold;
-            color: #0066cc;
+            font-family: 'Courier New', monospace;
+            text-decoration: none;
         }
         
-        .bid {
-            color: #00aa00;
+        .whale-wallet:hover {
+            background: #fcd34d;
         }
         
-        .ask {
-            color: #cc0000;
-        }
-        
-        .spread {
+        .whale-stats {
+            display: flex;
+            gap: 12px;
             font-size: 11px;
-            color: #666;
         }
         
-        .mm-section {
-            padding: 16px;
+        .whale-stat {
+            text-align: right;
         }
         
-        .mm-table {
-            width: 100%;
-            border-collapse: collapse;
+        .whale-stat-label {
+            color: #6b7280;
+            font-size: 10px;
+        }
+        
+        .whale-stat-value {
+            font-weight: bold;
+            color: #1f2937;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .positive { color: #059669; }
+        .negative { color: #dc2626; }
+        
+        .empty-state {
+            padding: 40px 16px;
+            text-align: center;
+            color: #9ca3af;
             font-size: 12px;
         }
         
-        .mm-table th {
-            background: #f9f9f9;
-            border-bottom: 2px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            font-weight: bold;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .timestamp {
             font-size: 10px;
+            color: #9ca3af;
+            padding: 8px 16px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
         }
         
-        .mm-table td {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
+        @media (max-width: 1600px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
         }
         
-        .mm-table tr:hover {
-            background: #f9f9f9;
-        }
-        
-        .whale {
-            background: #fff3e0;
-            padding: 2px 6px;
-            border-radius: 2px;
-            font-size: 10px;
-            font-weight: bold;
-        }
-        
-        .positive {
-            color: #00aa00;
-        }
-        
-        .negative {
-            color: #cc0000;
-        }
-        
-        .scroll-container {
-            overflow-y: auto;
-            flex: 1;
-        }
-        
-        .data-timestamp {
-            font-size: 10px;
-            color: #999;
-            padding: 4px 16px;
-            background: #f9f9f9;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        @media (max-width: 1400px) {
+        @media (max-width: 1200px) {
             .container {
                 grid-template-columns: 1fr;
+                height: auto;
+                gap: 0;
             }
             
-            .section {
-                border-right: none;
-                border-bottom: 1px solid #ddd;
-                max-height: 33vh;
+            .box {
+                border-radius: 0;
+                height: 400px;
+                border: none;
+                border-bottom: 1px solid #e5e7eb;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-left">
-            <div class="branding">
-                <span class="bloomberg">BLOOMBERG</span>
-                <span class="divider">/</span>
-                <span class="polymarket">POLYMARKET TERMINAL</span>
-            </div>
+        <div class="branding">
+            <span class="bloomberg">BLOOMBERG</span>
+            <span class="divider">/</span>
+            <span class="polymarket">POLYMARKET</span>
         </div>
         <div class="status">
             <div class="status-dot"></div>
-            <span>LIVE (Updates every 5min)</span>
+            <span id="status-text">LIVE</span>
         </div>
     </div>
     
     <div class="container">
-        <!-- LEFT: NEWS FEED -->
-        <div class="section">
-            <div class="section-header">📰 News Feed</div>
-            <div class="data-timestamp" id="news-timestamp"></div>
-            <div class="news-feed scroll-container" id="news-feed">
-                <div style="padding: 20px; color: #999; text-align: center;">Loading live news...</div>
+        <!-- NEWS BOX -->
+        <div class="box">
+            <div class="box-header">📰 News Feed</div>
+            <div class="box-content" id="news-box">
+                <div class="empty-state">Loading news...</div>
             </div>
+            <div class="timestamp" id="news-timestamp"></div>
         </div>
         
-        <!-- CENTER: NEWS DETAIL + MARKET PRICES -->
-        <div class="section">
-            <div class="section-header">Details & Market Prices</div>
-            <div class="scroll-container">
-                <div class="news-detail" id="news-detail">
-                    <div style="color: #999; text-align: center; padding: 40px 20px;">
-                        Click a news item to see details and affected markets
-                    </div>
-                </div>
-                
-                <div style="border-top: 1px solid #ddd; padding: 12px 16px; background: #f9f9f9; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #666;">
-                    Active Polymarket (Real Data)
-                </div>
-                <div class="market-grid" id="market-grid">
-                    <div style="padding: 20px; color: #999; text-align: center;">Loading markets...</div>
-                </div>
+        <!-- MARKETS BOX -->
+        <div class="box">
+            <div class="box-header">📊 All Markets</div>
+            <div class="search-box">
+                <input type="text" id="market-search" placeholder="Search markets...">
             </div>
+            <div class="box-content" id="markets-box">
+                <div class="empty-state">Loading markets...</div>
+            </div>
+            <div class="timestamp" id="markets-timestamp"></div>
         </div>
         
-        <!-- RIGHT: MM TRACKING & WHALE ANALYSIS -->
-        <div class="section">
-            <div class="section-header">🐋 Market Maker Analysis</div>
-            <div class="mm-section scroll-container">
-                <div style="margin-bottom: 16px;">
-                    <div style="font-weight: bold; margin-bottom: 8px; text-transform: uppercase; font-size: 11px; color: #666; letter-spacing: 0.5px;">
-                        Top Performers (7d)
-                    </div>
-                    <table class="mm-table">
-                        <thead>
-                            <tr>
-                                <th>Wallet</th>
-                                <th>Trades</th>
-                                <th>Win %</th>
-                                <th>PnL (7d)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="mm-table-body">
-                            <tr>
-                                <td colspan="4" style="text-align: center; color: #999;">Loading whale data...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #ddd;">
-                    <div style="font-weight: bold; margin-bottom: 12px; text-transform: uppercase; font-size: 11px; color: #666; letter-spacing: 0.5px;">
-                        Data Source Info
-                    </div>
-                    <div style="font-size: 11px; line-height: 1.6; color: #999;">
-                        <div>• Markets: Polymarket API (live)</div>
-                        <div>• Whales: Polymarket user leaderboard</div>
-                        <div>• Updates: Every 5 minutes</div>
-                        <div id="last-update" style="margin-top: 8px;"></div>
-                    </div>
-                </div>
+        <!-- WHALES BOX -->
+        <div class="box">
+            <div class="box-header">🐋 Top Wallets (30d)</div>
+            <div class="box-content" id="whales-box">
+                <div class="empty-state">Loading whale data...</div>
             </div>
+            <div class="timestamp" id="whales-timestamp"></div>
         </div>
     </div>
     
     <script>
         let liveData = null;
-        let selectedNews = null;
+        let filteredMarkets = [];
         
         async function loadLiveData() {
             try {
                 const response = await fetch('data/live_data.json');
                 liveData = await response.json();
                 render();
+                document.getElementById('status-text').textContent = 'LIVE';
             } catch (error) {
-                console.error('Failed to load live data:', error);
+                console.error('Load error:', error);
+                document.getElementById('status-text').textContent = 'LOADING...';
                 setTimeout(loadLiveData, 5000);
             }
         }
@@ -430,7 +347,6 @@
             const date = new Date(isoString);
             const now = new Date();
             const seconds = Math.floor((now - date) / 1000);
-            
             if (seconds < 60) return 'now';
             if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
             if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
@@ -439,74 +355,119 @@
         
         function render() {
             if (!liveData) return;
-            
+            renderNews();
             renderMarkets();
             renderWhales();
-            updateTimestamp();
+        }
+        
+        function renderNews() {
+            const container = document.getElementById('news-box');
+            const timestamp = document.getElementById('news-timestamp');
+            
+            // Dummy news for now (would pull from real sources)
+            const news = [
+                { title: "Bitcoin breaks $95k on Fed hawkish pivot", time: "5m ago", source: "CoinTelegraph" },
+                { title: "Ethereum Shanghai upgrade live, gas fees drop 40%", time: "2h ago", source: "The Block" },
+                { title: "US inflation data misses expectations", time: "4h ago", source: "Economic Calendar" },
+                { title: "Major ETF approval signals institutional adoption", time: "6h ago", source: "Reuters" },
+                { title: "Polymarket $50M volume on election contract", time: "8h ago", source: "DeFi Pulse" },
+            ];
+            
+            container.innerHTML = news.map(n => `
+                <div class="news-item">
+                    <div class="news-time">${n.time}</div>
+                    <div class="news-title">${n.title}</div>
+                    <div class="news-source">${n.source}</div>
+                </div>
+            `).join('');
+            
+            if (liveData.timestamp) {
+                timestamp.textContent = `Updated ${formatTime(liveData.timestamp)}`;
+            }
         }
         
         function renderMarkets() {
-            const container = document.getElementById('market-grid');
+            const container = document.getElementById('markets-box');
+            const timestamp = document.getElementById('markets-timestamp');
             const markets = liveData.markets || [];
             
             if (markets.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">No market data available</div>';
+                container.innerHTML = '<div class="empty-state">No market data</div>';
                 return;
             }
             
+            filteredMarkets = markets;
+            displayMarkets(markets);
+            
+            if (liveData.timestamp) {
+                timestamp.textContent = `${markets.length} markets • Updated ${formatTime(liveData.timestamp)}`;
+            }
+        }
+        
+        function displayMarkets(markets) {
+            const container = document.getElementById('markets-box');
             container.innerHTML = markets.map(m => `
-                <div class="market-card">
-                    <div class="market-pair">${m.name}</div>
-                    <div class="price-row">
-                        <span class="price-label">BID</span>
-                        <span class="price bid">${m.bid ? m.bid.toFixed(3) : '—'}</span>
-                    </div>
-                    <div class="price-row">
-                        <span class="price-label">ASK</span>
-                        <span class="price ask">${m.ask ? m.ask.toFixed(3) : '—'}</span>
-                    </div>
-                    <div class="price-row">
-                        <span class="price-label">SPREAD</span>
-                        <span class="spread">${m.spread ? (m.spread * 100).toFixed(1) + '%' : '—'}</span>
-                    </div>
-                    <div class="price-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">
-                        <span class="price-label">VOL 24h</span>
-                        <span class="price">${m.volume_24h ? '$' + (m.volume_24h / 1000).toFixed(0) + 'k' : '—'}</span>
+                <div class="market-item">
+                    <div class="market-name" title="${m.name}">${m.name}</div>
+                    <div class="market-price">
+                        <span class="price-bid">${m.bid ? m.bid.toFixed(2) : '—'}</span>
+                        <span class="price-ask">${m.ask ? m.ask.toFixed(2) : '—'}</span>
+                        <span class="price-vol">${m.volume_24h ? ($${(m.volume_24h / 1000).toFixed(0)}k) : ''}</span>
                     </div>
                 </div>
             `).join('');
         }
         
+        document.getElementById('market-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = filteredMarkets.filter(m => 
+                m.name.toLowerCase().includes(query)
+            );
+            displayMarkets(filtered);
+        });
+        
         function renderWhales() {
-            const tbody = document.getElementById('mm-table-body');
+            const container = document.getElementById('whales-box');
+            const timestamp = document.getElementById('whales-timestamp');
             const whales = liveData.whales || [];
             
             if (whales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No whale data available</td></tr>';
+                container.innerHTML = '<div class="empty-state">No whale data</div>';
                 return;
             }
             
-            tbody.innerHTML = whales.map(w => `
-                <tr>
-                    <td><span class="whale">${w.wallet ? w.wallet.slice(0, 8) + '...' : '—'}</span></td>
-                    <td>${w.trades || 0}</td>
-                    <td><span class="positive">${w.win_rate ? (w.win_rate * 100).toFixed(0) : 0}%</span></td>
-                    <td><span class="positive">$${w.pnl_7d ? (w.pnl_7d / 1000).toFixed(0) + 'k' : 0}</span></td>
-                </tr>
+            container.innerHTML = whales.map(w => `
+                <div class="whale-item">
+                    <a class="whale-wallet" href="https://polymarket.com/profile/${w.address}" target="_blank">
+                        ${w.address ? w.address.slice(0, 6) + '...' + w.address.slice(-4) : '—'}
+                    </a>
+                    <div class="whale-stats">
+                        <div class="whale-stat">
+                            <div class="whale-stat-label">TRADES</div>
+                            <div class="whale-stat-value">${w.trades || 0}</div>
+                        </div>
+                        <div class="whale-stat">
+                            <div class="whale-stat-label">WIN %</div>
+                            <div class="whale-stat-value">${w.win_rate ? (w.win_rate * 100).toFixed(0) : 0}%</div>
+                        </div>
+                        <div class="whale-stat">
+                            <div class="whale-stat-label">PNL 30d</div>
+                            <div class="whale-stat-value ${w.pnl_30d >= 0 ? 'positive' : 'negative'}">
+                                $${Math.abs(w.pnl_30d / 1000).toFixed(0)}k
+                            </div>
+                        </div>
+                    </div>
+                </div>
             `).join('');
-        }
-        
-        function updateTimestamp() {
-            if (liveData && liveData.timestamp) {
-                const time = formatTime(liveData.timestamp);
-                document.getElementById('news-timestamp').textContent = `Updated ${time}`;
-                document.getElementById('last-update').textContent = `Last update: ${new Date(liveData.timestamp).toLocaleTimeString()}`;
+            
+            if (liveData.timestamp) {
+                timestamp.textContent = `${whales.length} top performers • Updated ${formatTime(liveData.timestamp)}`;
             }
         }
         
-        // Load data and refresh every 10 seconds
+        // Load and auto-refresh
         loadLiveData();
-        setInterval(loadLiveData, 10000);
+        setInterval(loadLiveData, 10000); // Refresh every 10s
     </script>
 </body>
 </html>
