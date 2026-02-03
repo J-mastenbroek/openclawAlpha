@@ -1,372 +1,167 @@
 <!DOCTYPE html>
-<!-- Polyberg v3 - 2026-02-03 18:25 -->
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Polyberg - Professional Polymarket Terminal</title>
+    <title>Polyberg</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg: #0f172a;
-            --bg2: #1e293b;
-            --text: #f1f5f9;
-            --text2: #cbd5e1;
-            --border: #475569;
-            --green: #22c55e;
-            --red: #ef4444;
-            --cyan: #06b6d4;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
-            color: var(--text);
-            height: 100vh;
-            overflow: hidden;
-        }
-        .header {
-            background: rgba(15, 23, 42, 0.95);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--cyan);
-        }
-        .header-right {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 280px 1fr 320px;
-            gap: 20px;
-            padding: 20px;
-            height: calc(100vh - 80px);
-        }
-        @media (max-width: 1200px) {
-            .container {
-                grid-template-columns: 1fr;
-                height: auto;
-                gap: 12px;
-            }
-        }
-        .sidebar {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            overflow-y: auto;
-        }
-        .sidebar-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text2);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-        }
-        .filter-item {
-            padding: 8px 12px;
-            margin-bottom: 4px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            background: rgba(51, 65, 85, 0.2);
-            color: var(--text2);
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
-        .filter-item:hover { border-color: var(--cyan); color: var(--cyan); }
-        .filter-item.active { background: rgba(6, 182, 212, 0.2); border-color: var(--cyan); color: var(--cyan); }
-        .markets-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .toolbar {
-            display: flex;
-            gap: 12px;
-        }
-        .search-box {
-            flex: 1;
-            padding: 10px;
-            background: rgba(51, 65, 85, 0.3);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            color: var(--text);
-            font-size: 12px;
-        }
-        .search-box::placeholder { color: var(--text2); }
-        .markets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 12px;
-            overflow-y: auto;
-        }
-        .market-card {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .market-card:hover {
-            border-color: var(--cyan);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
-        }
-        .market-title {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text);
-            line-height: 1.3;
-        }
-        .market-category {
-            font-size: 10px;
-            background: rgba(6, 182, 212, 0.2);
-            color: var(--cyan);
-            padding: 2px 6px;
-            border-radius: 2px;
-            display: inline-block;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        .market-prices {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        .price { font-size: 12px; font-weight: 600; }
-        .price-bid { color: var(--green); }
-        .price-ask { color: var(--red); }
-        .market-stats {
-            font-size: 10px;
-            color: var(--text2);
-            padding-top: 8px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-        }
-        .details-panel {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            overflow-y: auto;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; }
+        .header { background: #1a2332; border-bottom: 1px solid #334; padding: 16px 24px; }
+        .title { font-size: 24px; font-weight: 700; color: #06b6d4; }
+        .container { display: grid; grid-template-columns: 280px 1fr 320px; gap: 20px; padding: 20px; }
+        @media (max-width: 1200px) { .container { grid-template-columns: 1fr; } }
+        .panel { background: rgba(30, 41, 59, 0.6); border: 1px solid #334; border-radius: 8px; padding: 16px; overflow-y: auto; }
+        .markets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .market { background: rgba(51, 65, 85, 0.3); border: 1px solid #334; border-radius: 6px; padding: 12px; cursor: pointer; }
+        .market:hover { border-color: #06b6d4; }
+        .market-title { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+        .market-prices { display: flex; gap: 12px; margin-bottom: 8px; font-weight: 600; font-size: 12px; }
+        .bid { color: #22c55e; }
+        .ask { color: #ef4444; }
+        .stats { font-size: 10px; color: #cbd5e1; padding-top: 8px; border-top: 1px solid #334; display: flex; justify-content: space-between; }
+        .filter { padding: 8px 12px; margin-bottom: 6px; background: rgba(51, 65, 85, 0.2); border: 1px solid transparent; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .filter:hover { border-color: #06b6d4; }
+        .filter.active { background: rgba(6, 182, 212, 0.2); border-color: #06b6d4; }
         .section { margin-bottom: 20px; }
-        .section-title {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text2);
-            margin-bottom: 10px;
-        }
-        .news-item {
-            background: rgba(51, 65, 85, 0.2);
-            border-left: 2px solid var(--cyan);
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-        .news-title { color: var(--text); font-weight: 600; margin-bottom: 2px; }
-        .news-source { color: var(--cyan); font-size: 10px; }
-        .whale-item {
-            background: rgba(51, 65, 85, 0.2);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 8px;
-            font-size: 10px;
-            margin-bottom: 8px;
-        }
-        .whale-addr { color: var(--cyan); font-family: monospace; font-size: 9px; word-break: break-all; }
-        .whale-stat { display: flex; justify-content: space-between; padding: 3px 0; }
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text2);
-        }
-        .empty-icon { font-size: 32px; margin-bottom: 12px; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.5); border-radius: 3px; }
+        .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #cbd5e1; margin-bottom: 10px; }
+        .news-item { background: rgba(51, 65, 85, 0.2); border-left: 2px solid #06b6d4; padding: 8px; border-radius: 4px; font-size: 11px; margin-bottom: 8px; }
+        .news-title { font-weight: 600; margin-bottom: 2px; }
+        .news-source { color: #06b6d4; font-size: 10px; }
+        #status { font-size: 12px; color: #cbd5e1; }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">⚡ POLYBERG</div>
-        <div class="header-right">
-            <span id="status">Loading...</span>
-            <button onclick="location.reload()" style="padding:6px 12px;background:var(--cyan);border:none;color:var(--bg);border-radius:4px;cursor:pointer;font-size:11px;">Refresh</button>
-        </div>
+        <div class="title">⚡ POLYBERG</div>
+        <div id="status" style="margin-top: 8px;">Loading...</div>
     </div>
 
     <div class="container">
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="sidebar-title">📁 Categories</div>
+        <div class="panel">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #cbd5e1; margin-bottom: 12px;">Categories</div>
             <div id="categories"></div>
         </div>
 
-        <!-- MARKETS -->
-        <div class="markets-panel">
-            <div class="toolbar">
-                <input type="text" id="search" class="search-box" placeholder="Search markets..." onkeyup="applyFilters()">
-            </div>
+        <div class="panel" style="overflow-y: auto;">
+            <input type="text" id="search" placeholder="Search markets..." style="width: 100%; padding: 8px; background: rgba(51,65,85,0.3); border: 1px solid #334; color: #f1f5f9; border-radius: 4px; margin-bottom: 12px;" onkeyup="applyFilter()">
             <div class="markets-grid" id="markets"></div>
         </div>
 
-        <!-- DETAILS -->
-        <div class="details-panel">
+        <div class="panel">
             <div class="section">
-                <div class="section-title">📰 News</div>
+                <div class="section-title">News</div>
                 <div id="news"></div>
             </div>
             <div class="section">
-                <div class="section-title">🐋 Whales</div>
+                <div class="section-title">Whales</div>
                 <div id="whales"></div>
             </div>
         </div>
     </div>
 
     <script>
-        let data = { markets: [], news: [], whales: [] };
+        let fullData = { markets: [], news: [], whales: [] };
         let filter = 'all';
-        let search = '';
 
         async function load() {
             try {
-                // Fetch all data with cache buster
-                const ts = Date.now();
-                const [mkt, news, whl] = await Promise.all([
-                    fetch(`./data/live_data.json?v=${ts}`).then(r => r.json()),
-                    fetch(`./data/news.json?v=${ts}`).then(r => r.json()).catch(() => ({ articles: [] })),
-                    fetch(`./data/whales.json?v=${ts}`).then(r => r.json()).catch(() => ({ top_whales: [] }))
-                ]);
+                const resp = await fetch('./data/live_data.json');
+                const mktData = await resp.json();
+                fullData.markets = mktData.markets || [];
 
-                data.markets = mkt.markets || [];
-                data.news = news.articles || [];
-                data.whales = mkt.top_whales || [];
+                const newsResp = await fetch('./data/news.json');
+                const newsData = await newsResp.json();
+                fullData.news = newsData.articles || [];
 
-                document.getElementById('status').textContent = `${data.markets.length} markets • Updated now`;
+                const whaleResp = await fetch('./data/whales.json');
+                const whaleData = await whaleResp.json();
+                fullData.whales = whaleData.top_whales || [];
 
+                document.getElementById('status').textContent = `${fullData.markets.length} markets loaded`;
                 render();
-            } catch (e) {
+            } catch(e) {
                 console.error(e);
-                document.getElementById('status').textContent = 'Error loading data';
-                document.getElementById('markets').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div>Failed to load data</div>';
+                document.getElementById('status').textContent = 'Error: ' + e.message;
             }
         }
 
         function render() {
-            renderCategories();
-            applyFilters();
+            renderCats();
+            applyFilter();
             renderNews();
             renderWhales();
         }
 
-        function renderCategories() {
+        function renderCats() {
             const cats = {};
-            data.markets.forEach(m => {
+            fullData.markets.forEach(m => {
                 const c = m.category || 'other';
                 cats[c] = (cats[c] || 0) + 1;
             });
 
-            let html = `<div class="filter-item ${filter === 'all' ? 'active' : ''}" onclick="setFilter('all')">All (${data.markets.length})</div>`;
-            Object.entries(cats).forEach(([c, n]) => {
-                const emoji = { crypto: '₿', sports: '⚽', politics: '🗳️', macro: '📊', tech: '💻', weather: '🌤️', celebrity: '⭐', other: '🎯' }[c] || '🎯';
-                html += `<div class="filter-item ${filter === c ? 'active' : ''}" onclick="setFilter('${c}')">${emoji} ${c} (${n})</div>`;
-            });
+            let html = `<div class="filter ${filter==='all'?'active':''}" onclick="setFilter('all')">All (${fullData.markets.length})</div>`;
+            for (const [c, n] of Object.entries(cats)) {
+                html += `<div class="filter ${filter===c?'active':''}" onclick="setFilter('${c}')">${c} (${n})</div>`;
+            }
             document.getElementById('categories').innerHTML = html;
         }
 
         function setFilter(cat) {
             filter = cat;
-            renderCategories();
-            applyFilters();
+            renderCats();
+            applyFilter();
         }
 
-        function applyFilters() {
-            search = document.getElementById('search').value.toLowerCase();
-            let filtered = data.markets.filter(m => {
+        function applyFilter() {
+            const q = document.getElementById('search').value.toLowerCase();
+            let mkts = fullData.markets.filter(m => {
                 const catOk = filter === 'all' || (m.category || 'other') === filter;
-                const searchOk = !search || m.title.toLowerCase().includes(search);
-                return catOk && searchOk;
-            }).sort((a, b) => b.liquidity - a.liquidity);
+                const qOk = !q || m.title.toLowerCase().includes(q);
+                return catOk && qOk;
+            }).sort((a,b) => b.liquidity - a.liquidity);
 
-            if (!filtered.length) {
-                document.getElementById('markets').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div>No markets</div>';
-                return;
-            }
-
-            document.getElementById('markets').innerHTML = filtered.map(m => `
-                <div class="market-card">
-                    <div class="market-category">${(m.category || 'other').substring(0, 4)}</div>
-                    <div class="market-title" title="${m.title}">${m.title}</div>
+            let html = mkts.map(m => `
+                <div class="market">
+                    <div class="market-title">${m.title}</div>
                     <div class="market-prices">
-                        <div class="price price-bid">Bid: $${m.bid.toFixed(3)}</div>
-                        <div class="price price-ask">Ask: $${m.ask.toFixed(3)}</div>
+                        <span class="bid">Bid $${m.bid.toFixed(3)}</span>
+                        <span class="ask">Ask $${m.ask.toFixed(3)}</span>
                     </div>
-                    <div class="market-stats">
-                        <div>Liq: $${(m.liquidity / 1e6).toFixed(1)}M</div>
-                        <div>Vol: $${(m.volume_24h / 1e3).toFixed(0)}K</div>
-                        <div>Spread: ${m.spread.toFixed(1)}%</div>
+                    <div class="stats">
+                        <div>Liq: $${(m.liquidity/1e6).toFixed(1)}M</div>
+                        <div>Vol: $${(m.volume_24h/1e3).toFixed(0)}K</div>
                     </div>
                 </div>
             `).join('');
+            document.getElementById('markets').innerHTML = html || '<div style="color: #cbd5e1;">No markets found</div>';
         }
 
         function renderNews() {
-            if (!data.news.length) {
-                document.getElementById('news').innerHTML = '<div style="font-size:11px;color:var(--text2);">No news</div>';
-                return;
-            }
-            document.getElementById('news').innerHTML = data.news.slice(0, 5).map(n => `
-                <a href="${n.url}" target="_blank" style="text-decoration:none;color:inherit;">
+            let html = fullData.news.slice(0, 5).map(n => `
+                <a href="${n.url}" target="_blank" style="text-decoration:none; color:inherit;">
                     <div class="news-item">
                         <div class="news-title">${n.title}</div>
                         <div class="news-source">${n.source}</div>
                     </div>
                 </a>
             `).join('');
+            document.getElementById('news').innerHTML = html || '<div style="font-size: 11px; color: #cbd5e1;">No news</div>';
         }
 
         function renderWhales() {
-            if (!data.whales.length) {
-                document.getElementById('whales').innerHTML = '<div style="font-size:11px;color:var(--text2);">No whales</div>';
-                return;
-            }
-            document.getElementById('whales').innerHTML = data.whales.slice(0, 5).map(w => `
-                <div class="whale-item">
-                    <div class="whale-addr">${w.address.substring(0, 8)}...${w.address.substring(w.address.length - 6)}</div>
-                    <div class="whale-stat"><span>Trades:</span> <span>${w.trades_30d || 0}</span></div>
-                    <div class="whale-stat"><span>Win:</span> <span>${((w.win_rate || 0) * 100).toFixed(0)}%</span></div>
-                    <div class="whale-stat"><span>PnL 30d:</span> <span style="color:${(w.pnl_30d || 0) > 0 ? 'var(--green)' : 'var(--red)'}">$${Math.abs(w.pnl_30d || 0).toLocaleString()}</span></div>
+            let html = fullData.whales.slice(0, 5).map(w => `
+                <div style="background: rgba(51,65,85,0.2); border: 1px solid #334; border-radius: 4px; padding: 8px; margin-bottom: 8px; font-size: 10px;">
+                    <div style="color: #06b6d4; font-family: monospace; word-break: break-all; margin-bottom: 4px;">${w.address}</div>
+                    <div>Trades: ${w.trades_30d || 0}</div>
+                    <div>Win: ${((w.win_rate || 0)*100).toFixed(0)}%</div>
+                    <div>PnL: $${Math.abs(w.pnl_30d || 0).toLocaleString()}</div>
                 </div>
             `).join('');
+            document.getElementById('whales').innerHTML = html || '<div style="font-size: 11px; color: #cbd5e1;">No whales</div>';
         }
 
-        // Load on page open
         window.addEventListener('load', load);
-        // Auto-refresh every 60 seconds
         setInterval(load, 60000);
     </script>
 </body>
