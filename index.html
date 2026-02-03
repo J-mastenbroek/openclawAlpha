@@ -105,6 +105,27 @@
             font-size: 13px;
         }
         
+        .sort-btn {
+            padding: 6px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .sort-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .sort-btn.active {
+            border-width: 2px;
+            opacity: 1;
+        }
+        
         /* NEWS BOX */
         .news-item {
             padding: 12px 16px;
@@ -309,6 +330,11 @@
             <div class="box-header">📊 All Markets</div>
             <div class="search-box">
                 <input type="text" id="market-search" placeholder="Search markets...">
+                <div style="display: flex; gap: 8px; padding: 8px 0; flex-wrap: wrap;">
+                    <button class="sort-btn" data-sort="volume" style="background: #fef3c7; color: #b45309;">📈 Volume</button>
+                    <button class="sort-btn" data-sort="spread" style="background: #dbeafe; color: #0369a1;">📊 Spread</button>
+                    <button class="sort-btn" data-sort="name" style="background: #f3e8ff; color: #6b21a8;">A-Z</button>
+                </div>
             </div>
             <div class="box-content" id="markets-box">
                 <div class="empty-state">Loading markets...</div>
@@ -329,6 +355,7 @@
     <script>
         let liveData = null;
         let filteredMarkets = [];
+        let currentSort = 'volume'; // default sort
         
         async function loadLiveData() {
             try {
@@ -386,6 +413,20 @@
             }
         }
         
+        function sortMarkets(markets, sortBy) {
+            const copy = [...markets];
+            switch(sortBy) {
+                case 'volume':
+                    return copy.sort((a, b) => (b.volume_24h || 0) - (a.volume_24h || 0));
+                case 'spread':
+                    return copy.sort((a, b) => (a.spread || 9999) - (b.spread || 9999));
+                case 'name':
+                    return copy.sort((a, b) => a.name.localeCompare(b.name));
+                default:
+                    return copy;
+            }
+        }
+        
         function renderMarkets() {
             const container = document.getElementById('markets-box');
             const timestamp = document.getElementById('markets-timestamp');
@@ -400,13 +441,14 @@
             displayMarkets(markets);
             
             if (liveData.timestamp) {
-                timestamp.textContent = `${markets.length} markets • Updated ${formatTime(liveData.timestamp)}`;
+                timestamp.textContent = `${markets.length} markets • Sorted by ${currentSort} • Updated ${formatTime(liveData.timestamp)}`;
             }
         }
         
         function displayMarkets(markets) {
             const container = document.getElementById('markets-box');
-            container.innerHTML = markets.map(m => `
+            const sorted = sortMarkets(markets, currentSort);
+            container.innerHTML = sorted.map(m => `
                 <div class="market-item">
                     <div class="market-name" title="${m.name}">${m.name}</div>
                     <div class="market-price">
@@ -417,6 +459,24 @@
                 </div>
             `).join('');
         }
+        
+        // Sort button handlers
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentSort = e.target.dataset.sort;
+                displayMarkets(filteredMarkets);
+                // Update timestamp
+                const timestamp = document.getElementById('markets-timestamp');
+                if (liveData.timestamp) {
+                    timestamp.textContent = `${filteredMarkets.length} markets • Sorted by ${currentSort} • Updated ${formatTime(liveData.timestamp)}`;
+                }
+            });
+        });
+        
+        // Make first sort button active by default
+        document.querySelector('[data-sort="volume"]').classList.add('active');
         
         document.getElementById('market-search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
