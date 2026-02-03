@@ -66,6 +66,12 @@
             height: 6px;
             border-radius: 50%;
             background: #00aa00;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         .container {
@@ -212,6 +218,9 @@
             font-weight: bold;
             color: #333;
             margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .price-row {
@@ -297,6 +306,14 @@
             flex: 1;
         }
         
+        .data-timestamp {
+            font-size: 10px;
+            color: #999;
+            padding: 4px 16px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+        
         @media (max-width: 1400px) {
             .container {
                 grid-template-columns: 1fr;
@@ -321,7 +338,7 @@
         </div>
         <div class="status">
             <div class="status-dot"></div>
-            <span>LIVE</span>
+            <span>LIVE (Updates every 5min)</span>
         </div>
     </div>
     
@@ -329,8 +346,9 @@
         <!-- LEFT: NEWS FEED -->
         <div class="section">
             <div class="section-header">📰 News Feed</div>
+            <div class="data-timestamp" id="news-timestamp"></div>
             <div class="news-feed scroll-container" id="news-feed">
-                <!-- Populated by JavaScript -->
+                <div style="padding: 20px; color: #999; text-align: center;">Loading live news...</div>
             </div>
         </div>
         
@@ -345,10 +363,10 @@
                 </div>
                 
                 <div style="border-top: 1px solid #ddd; padding: 12px 16px; background: #f9f9f9; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #666;">
-                    Polymarket Prices
+                    Active Polymarket (Real Data)
                 </div>
                 <div class="market-grid" id="market-grid">
-                    <!-- Populated by JavaScript -->
+                    <div style="padding: 20px; color: #999; text-align: center;">Loading markets...</div>
                 </div>
             </div>
         </div>
@@ -357,27 +375,36 @@
         <div class="section">
             <div class="section-header">🐋 Market Maker Analysis</div>
             <div class="mm-section scroll-container">
-                <table class="mm-table">
-                    <thead>
-                        <tr>
-                            <th>Wallet</th>
-                            <th>Trades</th>
-                            <th>Win %</th>
-                            <th>PnL</th>
-                            <th>Last Activity</th>
-                        </tr>
-                    </thead>
-                    <tbody id="mm-table-body">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
+                <div style="margin-bottom: 16px;">
+                    <div style="font-weight: bold; margin-bottom: 8px; text-transform: uppercase; font-size: 11px; color: #666; letter-spacing: 0.5px;">
+                        Top Performers (7d)
+                    </div>
+                    <table class="mm-table">
+                        <thead>
+                            <tr>
+                                <th>Wallet</th>
+                                <th>Trades</th>
+                                <th>Win %</th>
+                                <th>PnL (7d)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mm-table-body">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #999;">Loading whale data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 
                 <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #ddd;">
                     <div style="font-weight: bold; margin-bottom: 12px; text-transform: uppercase; font-size: 11px; color: #666; letter-spacing: 0.5px;">
-                        🎯 Whale Activity (24h)
+                        Data Source Info
                     </div>
-                    <div id="whale-activity" style="font-size: 12px; line-height: 1.6;">
-                        <!-- Populated by JavaScript -->
+                    <div style="font-size: 11px; line-height: 1.6; color: #999;">
+                        <div>• Markets: Polymarket API (live)</div>
+                        <div>• Whales: Polymarket user leaderboard</div>
+                        <div>• Updates: Every 5 minutes</div>
+                        <div id="last-update" style="margin-top: 8px;"></div>
                     </div>
                 </div>
             </div>
@@ -385,216 +412,101 @@
     </div>
     
     <script>
-        // Real Polymarket data structure
-        const newsData = [
-            {
-                id: 1,
-                title: "Bitcoin breaks $95k resistance on Fed hawkish pivot",
-                source: "CoinTelegraph",
-                time: "5m ago",
-                content: "Bitcoin surged past $95,000 after Federal Reserve officials signaled a more hawkish stance than expected. The move affected major prediction markets with 200k+ in trading volume within the hour. Smart money accumulated positions ahead of the announcement.",
-                markets: [
-                    { name: "BTC > $100k by Q2 2025", bid: 0.68, ask: 0.70, spread: 2.9 },
-                    { name: "Bitcoin Settlement > $95k", bid: 0.72, ask: 0.73, spread: 1.4 }
-                ],
-                affectedWhales: ["0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78", "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4"]
-            },
-            {
-                id: 2,
-                title: "Ethereum Shanghai upgrade goes live, gas fees plummet",
-                source: "The Block",
-                time: "2h ago",
-                content: "Major Ethereum upgrade deployed with 40% improvement in throughput. Network efficiency surge caused ripple effects across DeFi prediction markets. Volume concentrated on \"ETH Difficulty\" and scaling metrics.",
-                markets: [
-                    { name: "ETH > $5k by EOY", bid: 0.42, ask: 0.44, spread: 4.5 },
-                    { name: "Ethereum Gas Avg < 20 gwei", bid: 0.58, ask: 0.60, spread: 3.4 }
-                ],
-                affectedWhales: ["0x9b0fa4860b49d999f65e04e67d3b5f5e3e3E5Ac2"]
-            },
-            {
-                id: 3,
-                title: "US inflation data misses expectations, sentiment shifts",
-                source: "Economic Calendar",
-                time: "4h ago",
-                content: "CPI came in at 3.2% vs 3.5% forecast. Immediate repricing across macro prediction markets. Large institutional orders detected on \"Inflation < 2.5% by EOY\" contract.",
-                markets: [
-                    { name: "US Inflation < 2.5% by Dec 2025", bid: 0.41, ask: 0.43, spread: 4.6 },
-                    { name: "Fed Rate Cuts in 2025", bid: 0.65, ask: 0.67, spread: 3.0 }
-                ],
-                affectedWhales: ["0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f"]
-            },
-            {
-                id: 4,
-                title: "Major ETF approval signals institutional Polymarket adoption",
-                source: "Reuters",
-                time: "6h ago",
-                content: "SEC approved three new spot crypto ETFs, expected to drive institutional capital into prediction markets. Early adopters positioning ahead of Q1 inflows. Estimated $500M+ potential inflows.",
-                markets: [
-                    { name: "Institutional Prediction Market Volume > $1B", bid: 0.54, ask: 0.56, spread: 3.6 },
-                    { name: "Crypto Market Cap > $3T by Q2 2025", bid: 0.62, ask: 0.64, spread: 3.2 }
-                ],
-                affectedWhales: ["0xd4F3d3E3e3E3E3E3E3E3E3E3e3e3e3E3e3E3E3E3"]
-            },
-            {
-                id: 5,
-                title: "Polymarket largest contract \"Will Trump win 2024\" hits $50M volume",
-                source: "DeFi Pulse",
-                time: "8h ago",
-                content: "Political prediction market hitting all-time highs. Smart money split: 60% on Trump, 40% on alternative. Order book shows retail cascading on dips.",
-                markets: [
-                    { name: "Will Trump win 2024", bid: 0.62, ask: 0.64, spread: 3.1 },
-                    { name: "Trump Electoral College > 270", bid: 0.58, ask: 0.60, spread: 3.4 }
-                ],
-                affectedWhales: ["0xa5A3e5f1e3F3e3E3E3E3e3E3E3E3E3e3e3E3E3e3"]
-            }
-        ];
-        
-        // Market maker whale data
-        const mmData = [
-            {
-                wallet: "0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78",
-                trades: 487,
-                winRate: 0.72,
-                pnl: 285000,
-                lastActivity: "2m ago",
-                strategy: "Settles big moves, follows oracle"
-            },
-            {
-                wallet: "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4",
-                trades: 234,
-                winRate: 0.68,
-                pnl: 142000,
-                lastActivity: "8m ago",
-                strategy: "Bid-ask spread arbitrage"
-            },
-            {
-                wallet: "0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f",
-                trades: 612,
-                winRate: 0.65,
-                pnl: 198000,
-                lastActivity: "now",
-                strategy: "News event timing"
-            },
-            {
-                wallet: "0x9b0fa4860b49d999f65e04e67d3b5f5e3e3E5Ac2",
-                trades: 156,
-                winRate: 0.71,
-                pnl: 89000,
-                lastActivity: "15m ago",
-                strategy: "Retail cascade detection"
-            },
-            {
-                wallet: "0xd4F3d3E3e3E3E3E3E3E3E3E3e3e3e3E3e3E3E3E3",
-                trades: 823,
-                winRate: 0.59,
-                pnl: 156000,
-                lastActivity: "1h ago",
-                strategy: "Volume-weighted orders"
-            }
-        ];
-        
+        let liveData = null;
         let selectedNews = null;
         
-        function renderNewsFeed() {
-            const container = document.getElementById('news-feed');
-            container.innerHTML = newsData.map(item => `
-                <div class="news-item ${selectedNews?.id === item.id ? 'active' : ''}" onclick="selectNews(${item.id})">
-                    <div class="news-time">${item.time}</div>
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-source">${item.source}</div>
-                </div>
-            `).join('');
+        async function loadLiveData() {
+            try {
+                const response = await fetch('data/live_data.json');
+                liveData = await response.json();
+                render();
+            } catch (error) {
+                console.error('Failed to load live data:', error);
+                setTimeout(loadLiveData, 5000);
+            }
         }
         
-        function selectNews(id) {
-            selectedNews = newsData.find(n => n.id === id);
-            renderNewsFeed();
-            renderNewsDetail();
-            renderMarketPrices();
-        }
-        
-        function renderNewsDetail() {
-            if (!selectedNews) return;
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
             
-            const container = document.getElementById('news-detail');
-            container.innerHTML = `
-                <div class="detail-title">${selectedNews.title}</div>
-                <div class="detail-source">${selectedNews.source} • ${selectedNews.time}</div>
-                <div class="detail-content">${selectedNews.content}</div>
-                <div class="markets-affected">
-                    <div style="font-weight: bold; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #666;">
-                        Affected Markets
-                    </div>
-                    ${selectedNews.markets.map(m => `
-                        <div class="market-item">
-                            <div class="market-name">${m.name}</div>
-                            <div class="market-info">
-                                Bid: <span class="price bid">${m.bid.toFixed(3)}</span> | 
-                                Ask: <span class="price ask">${m.ask.toFixed(3)}</span> | 
-                                Spread: <span class="spread">${m.spread.toFixed(1)}%</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+            if (seconds < 60) return 'now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            return Math.floor(seconds / 86400) + 'd ago';
         }
         
-        function renderMarketPrices() {
+        function render() {
+            if (!liveData) return;
+            
+            renderMarkets();
+            renderWhales();
+            updateTimestamp();
+        }
+        
+        function renderMarkets() {
             const container = document.getElementById('market-grid');
-            const allMarkets = selectedNews ? selectedNews.markets : [];
+            const markets = liveData.markets || [];
             
-            container.innerHTML = allMarkets.map(m => `
+            if (markets.length === 0) {
+                container.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">No market data available</div>';
+                return;
+            }
+            
+            container.innerHTML = markets.map(m => `
                 <div class="market-card">
                     <div class="market-pair">${m.name}</div>
                     <div class="price-row">
                         <span class="price-label">BID</span>
-                        <span class="price bid">${m.bid.toFixed(3)}</span>
+                        <span class="price bid">${m.bid ? m.bid.toFixed(3) : '—'}</span>
                     </div>
                     <div class="price-row">
                         <span class="price-label">ASK</span>
-                        <span class="price ask">${m.ask.toFixed(3)}</span>
+                        <span class="price ask">${m.ask ? m.ask.toFixed(3) : '—'}</span>
                     </div>
                     <div class="price-row">
                         <span class="price-label">SPREAD</span>
-                        <span class="spread">${m.spread.toFixed(1)}%</span>
+                        <span class="spread">${m.spread ? (m.spread * 100).toFixed(1) + '%' : '—'}</span>
+                    </div>
+                    <div class="price-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">
+                        <span class="price-label">VOL 24h</span>
+                        <span class="price">${m.volume_24h ? '$' + (m.volume_24h / 1000).toFixed(0) + 'k' : '—'}</span>
                     </div>
                 </div>
             `).join('');
         }
         
-        function renderMMTable() {
+        function renderWhales() {
             const tbody = document.getElementById('mm-table-body');
-            tbody.innerHTML = mmData.map(mm => `
+            const whales = liveData.whales || [];
+            
+            if (whales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No whale data available</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = whales.map(w => `
                 <tr>
-                    <td><span class="whale">${mm.wallet.slice(0, 8)}...</span></td>
-                    <td>${mm.trades}</td>
-                    <td><span class="positive">${(mm.winRate * 100).toFixed(0)}%</span></td>
-                    <td><span class="positive">+$${(mm.pnl / 1000).toFixed(0)}k</span></td>
-                    <td>${mm.lastActivity}</td>
+                    <td><span class="whale">${w.wallet ? w.wallet.slice(0, 8) + '...' : '—'}</span></td>
+                    <td>${w.trades || 0}</td>
+                    <td><span class="positive">${w.win_rate ? (w.win_rate * 100).toFixed(0) : 0}%</span></td>
+                    <td><span class="positive">$${w.pnl_7d ? (w.pnl_7d / 1000).toFixed(0) + 'k' : 0}</span></td>
                 </tr>
             `).join('');
         }
         
-        function renderWhaleActivity() {
-            const container = document.getElementById('whale-activity');
-            const activity = mmData.map(mm => `
-                <div style="padding: 8px; border: 1px solid #eee; margin-bottom: 8px; border-radius: 2px;">
-                    <div style="font-weight: bold; color: #333;">${mm.wallet.slice(0, 12)}...</div>
-                    <div style="font-size: 11px; color: #666; margin: 4px 0;">${mm.strategy}</div>
-                    <div style="font-size: 11px; color: #0066cc;">
-                        ${mm.trades} trades | ${(mm.winRate * 100).toFixed(0)}% win | 
-                        <span class="positive">+$${(mm.pnl / 1000).toFixed(0)}k PnL</span>
-                    </div>
-                </div>
-            `).join('');
-            container.innerHTML = activity;
+        function updateTimestamp() {
+            if (liveData && liveData.timestamp) {
+                const time = formatTime(liveData.timestamp);
+                document.getElementById('news-timestamp').textContent = `Updated ${time}`;
+                document.getElementById('last-update').textContent = `Last update: ${new Date(liveData.timestamp).toLocaleTimeString()}`;
+            }
         }
         
-        // Initialize
-        renderNewsFeed();
-        selectNews(1);
-        renderMMTable();
-        renderWhaleActivity();
+        // Load data and refresh every 10 seconds
+        loadLiveData();
+        setInterval(loadLiveData, 10000);
     </script>
 </body>
 </html>
