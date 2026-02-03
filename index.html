@@ -1,501 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polyberg - Polymarket Terminal</title>
+    <title>Polyberg</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html, body {
-            height: 100%;
-            width: 100%;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            background: #f5f7fa;
-            color: #333;
-        }
-        
-        .header {
-            background: #fff;
-            border-bottom: 2px solid #000;
-            padding: 14px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        .logo {
-            font-weight: bold;
-            font-size: 16px;
-            letter-spacing: 1px;
-        }
-        
-        .status {
-            font-size: 12px;
-            color: #666;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .dot {
-            width: 6px;
-            height: 6px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        .main {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 0;
-            height: calc(100vh - 50px);
-        }
-        
-        .panel {
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        .panel:last-child {
-            border-right: none;
-        }
-        
-        .panel-header {
-            background: #f9f9f9;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 12px 16px;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #666;
-        }
-        
-        .panel-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0;
-        }
-        
-        .search {
-            padding: 10px 16px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .search input {
-            width: 100%;
-            padding: 6px 10px;
-            border: 1px solid #d0d0d0;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        
-        /* NEWS */
-        .news-item {
-            padding: 10px 16px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background 0.15s;
-            font-size: 12px;
-        }
-        
-        .news-item:hover {
-            background: #f9f9f9;
-        }
-        
-        .news-time {
-            font-size: 10px;
-            color: #999;
-            margin-bottom: 3px;
-        }
-        
-        .news-title {
-            font-weight: 500;
-            color: #1a1a1a;
-            line-height: 1.3;
-            margin-bottom: 3px;
-        }
-        
-        .news-source {
-            font-size: 10px;
-            color: #0066cc;
-            text-decoration: none;
-        }
-        
-        .news-source:hover {
-            text-decoration: underline;
-        }
-        
-        /* MARKETS */
-        .market-row {
-            display: flex;
-            padding: 10px 16px;
-            border-bottom: 1px solid #f0f0f0;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 11px;
-        }
-        
-        .market-row:hover {
-            background: #f9f9f9;
-        }
-        
-        .market-link {
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: 500;
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .market-link:hover {
-            text-decoration: underline;
-        }
-        
-        .market-prices {
-            display: flex;
-            gap: 8px;
-            white-space: nowrap;
-            align-items: center;
-        }
-        
-        .bid {
-            color: #059669;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .ask {
-            color: #dc2626;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .vol {
-            color: #666;
-            font-size: 10px;
-        }
-        
-        /* WHALES */
-        .whale-row {
-            padding: 10px 16px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-size: 11px;
-        }
-        
-        .whale-row:hover {
-            background: #f9f9f9;
-        }
-        
-        .whale-link {
-            background: #fef3c7;
-            color: #92400e;
-            padding: 3px 6px;
-            border-radius: 2px;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-            font-size: 10px;
-            text-decoration: none;
-        }
-        
-        .whale-link:hover {
-            background: #fcd34d;
-            text-decoration: none;
-        }
-        
-        .whale-stats {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .stat {
-            text-align: right;
-        }
-        
-        .stat-label {
-            font-size: 9px;
-            color: #999;
-        }
-        
-        .stat-value {
-            font-weight: 600;
-            color: #1a1a1a;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .profit {
-            color: #059669;
-        }
-        
-        .loss {
-            color: #dc2626;
-        }
-        
-        .panel-footer {
-            padding: 6px 16px;
-            background: #f9f9f9;
-            border-top: 1px solid #e0e0e0;
-            font-size: 10px;
-            color: #999;
-        }
-        
-        .empty {
-            padding: 20px 16px;
-            text-align: center;
-            color: #999;
-            font-size: 12px;
-        }
-        
-        .error {
-            padding: 20px 16px;
-            text-align: center;
-            color: #dc2626;
-            font-size: 12px;
-        }
-        
-        @media (max-width: 1400px) {
-            .main {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        @media (max-width: 900px) {
-            .main {
-                grid-template-columns: 1fr;
-            }
-            
-            .panel {
-                height: 50vh;
-            }
-        }
-        
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f5f5f5;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; }
+        .header { background: #1a2332; border-bottom: 1px solid #334; padding: 16px 24px; }
+        .title { font-size: 24px; font-weight: 700; color: #06b6d4; }
+        .container { display: grid; grid-template-columns: 280px 1fr 320px; gap: 20px; padding: 20px; }
+        @media (max-width: 1200px) { .container { grid-template-columns: 1fr; } }
+        .panel { background: rgba(30, 41, 59, 0.6); border: 1px solid #334; border-radius: 8px; padding: 16px; overflow-y: auto; }
+        .markets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .market { background: rgba(51, 65, 85, 0.3); border: 1px solid #334; border-radius: 6px; padding: 12px; cursor: pointer; }
+        .market:hover { border-color: #06b6d4; }
+        .market-title { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+        .market-prices { display: flex; gap: 12px; margin-bottom: 8px; font-weight: 600; font-size: 12px; }
+        .bid { color: #22c55e; }
+        .ask { color: #ef4444; }
+        .stats { font-size: 10px; color: #cbd5e1; padding-top: 8px; border-top: 1px solid #334; display: flex; justify-content: space-between; }
+        .filter { padding: 8px 12px; margin-bottom: 6px; background: rgba(51, 65, 85, 0.2); border: 1px solid transparent; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .filter:hover { border-color: #06b6d4; }
+        .filter.active { background: rgba(6, 182, 212, 0.2); border-color: #06b6d4; }
+        .section { margin-bottom: 20px; }
+        .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #cbd5e1; margin-bottom: 10px; }
+        .news-item { background: rgba(51, 65, 85, 0.2); border-left: 2px solid #06b6d4; padding: 8px; border-radius: 4px; font-size: 11px; margin-bottom: 8px; }
+        .news-title { font-weight: 600; margin-bottom: 2px; }
+        .news-source { color: #06b6d4; font-size: 10px; }
+        #status { font-size: 12px; color: #cbd5e1; }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">POLYBERG</div>
-        <div class="status">
-            <div class="dot"></div>
-            <span id="last-update">CHECKING...</span>
-        </div>
+        <div class="title">⚡ POLYBERG</div>
+        <div id="status" style="margin-top: 8px;">Loading...</div>
     </div>
-    
-    <div class="main">
-        <!-- NEWS PANEL -->
+
+    <div class="container">
         <div class="panel">
-            <div class="panel-header">📰 News</div>
-            <div class="panel-content" id="news-list"></div>
-            <div class="panel-footer" id="news-footer"></div>
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #cbd5e1; margin-bottom: 12px;">Categories</div>
+            <div id="categories"></div>
         </div>
-        
-        <!-- MARKETS PANEL -->
+
+        <div class="panel" style="overflow-y: auto;">
+            <input type="text" id="search" placeholder="Search markets..." style="width: 100%; padding: 8px; background: rgba(51,65,85,0.3); border: 1px solid #334; color: #f1f5f9; border-radius: 4px; margin-bottom: 12px;" onkeyup="applyFilter()">
+            <div class="markets-grid" id="markets"></div>
+        </div>
+
         <div class="panel">
-            <div class="panel-header">📊 Markets</div>
-            <div class="search">
-                <input type="text" id="search" placeholder="Search markets...">
+            <div class="section">
+                <div class="section-title">News</div>
+                <div id="news"></div>
             </div>
-            <div class="panel-content" id="markets-list"></div>
-            <div class="panel-footer" id="markets-footer"></div>
-        </div>
-        
-        <!-- WHALES PANEL -->
-        <div class="panel">
-            <div class="panel-header">🐋 Top Wallets</div>
-            <div class="panel-content" id="whales-list"></div>
-            <div class="panel-footer" id="whales-footer"></div>
+            <div class="section">
+                <div class="section-title">Whales</div>
+                <div id="whales"></div>
+            </div>
         </div>
     </div>
-    
+
     <script>
-        let data = { timestamp: new Date().toISOString(), markets: [], whales: [], news: [] };
-        let filteredMarkets = [];
-        
-        function timeAgo(isoString) {
-            const date = new Date(isoString);
-            const seconds = Math.floor((new Date() - date) / 1000);
-            if (seconds < 60) return 'just now';
-            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
-            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
-            return Math.floor(seconds / 86400) + 'd ago';
-        }
-        
-        function renderNews() {
-            const list = document.getElementById('news-list');
-            const news = data.news || [];
-            
-            if (news.length === 0) {
-                list.innerHTML = '<div class="empty">No news data</div>';
-                document.getElementById('news-footer').textContent = 'Check data source';
-                return;
-            }
-            
-            list.innerHTML = news.map(n => `
-                <div class="news-item">
-                    <div class="news-time">${timeAgo(n.time)}</div>
-                    <div class="news-title">${n.title}</div>
-                    <a class="news-source" href="${n.url}" target="_blank">${n.source}</a>
-                </div>
-            `).join('');
-            
-            document.getElementById('news-footer').textContent = `${news.length} articles • Updated ${timeAgo(data.timestamp)}`;
-        }
-        
-        function renderMarkets() {
-            const list = document.getElementById('markets-list');
-            const markets = data.markets || [];
-            
-            if (markets.length === 0) {
-                list.innerHTML = '<div class="error">⚠️ No live market data available. Check API connection.</div>';
-                document.getElementById('markets-footer').textContent = 'Data source: API error';
-                return;
-            }
-            
-            filteredMarkets = markets;
-            displayMarkets(filteredMarkets);
-            
-            document.getElementById('markets-footer').textContent = `${markets.length} live • ${timeAgo(data.timestamp)} • Click to verify`;
-        }
-        
-        function displayMarkets(markets) {
-            const list = document.getElementById('markets-list');
-            
-            if (markets.length === 0) {
-                list.innerHTML = '<div class="empty">No matches</div>';
-                return;
-            }
-            
-            list.innerHTML = markets.map(m => `
-                <div class="market-row">
-                    <a class="market-link" href="https://polymarket.com/markets?market=${m.id}" target="_blank" title="Click to verify on Polymarket">
-                        ${m.name}
-                    </a>
-                    <div class="market-prices">
-                        <span class="bid">${m.bid.toFixed(2)}</span>
-                        <span class="ask">${m.ask.toFixed(2)}</span>
-                        ${m.volume_24h ? `<span class="vol">$${(m.volume_24h / 1000).toFixed(0)}k</span>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        document.getElementById('search').addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase();
-            displayMarkets(filteredMarkets.filter(m => m.name.toLowerCase().includes(q)));
-        });
-        
-        function renderWhales() {
-            const list = document.getElementById('whales-list');
-            const whales = data.whales || [];
-            
-            if (whales.length === 0) {
-                list.innerHTML = '<div class="empty">No whale data</div>';
-                document.getElementById('whales-footer').textContent = 'Check data source';
-                return;
-            }
-            
-            list.innerHTML = whales.map(w => `
-                <div class="whale-row">
-                    <a class="whale-link" href="https://polymarket.com/profile/${w.address}" target="_blank" title="View wallet on Polymarket">
-                        ${w.address.slice(0, 6)}...${w.address.slice(-4)}
-                    </a>
-                    <div class="whale-stats">
-                        <div class="stat">
-                            <div class="stat-label">Trades</div>
-                            <div class="stat-value">${w.trades}</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">Win</div>
-                            <div class="stat-value">${(w.win_rate * 100).toFixed(0)}%</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-label">30d PnL</div>
-                            <div class="stat-value ${w.pnl_30d >= 0 ? 'profit' : 'loss'}">
-                                ${w.pnl_30d >= 0 ? '+' : ''}$${(w.pnl_30d / 1000).toFixed(0)}k
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('whales-footer').textContent = `${whales.length} tracked • ${timeAgo(data.timestamp)} • Click to verify`;
-        }
-        
-        function render() {
-            renderNews();
-            renderMarkets();
-            renderWhales();
-            
-            const now = new Date();
-            const timestamp = data.timestamp ? new Date(data.timestamp) : now;
-            const diffSecs = Math.floor((now - timestamp) / 1000);
-            
-            if (diffSecs < 60) {
-                document.getElementById('last-update').textContent = 'LIVE NOW';
-            } else if (diffSecs < 300) {
-                document.getElementById('last-update').textContent = `${Math.floor(diffSecs / 60)}m ago`;
-            } else {
-                document.getElementById('last-update').textContent = 'STALE (>5min)';
-            }
-        }
-        
-        async function fetchData() {
+        let fullData = { markets: [], news: [], whales: [] };
+        let filter = 'all';
+
+        async function load() {
             try {
-                const res = await fetch('data/live_data.json?t=' + Date.now());
-                if (res.ok) {
-                    const newData = await res.json();
-                    // Only update if newer
-                    if (newData.timestamp > data.timestamp) {
-                        data = newData;
-                    }
-                    render();
-                }
-            } catch (e) {
-                console.error('Fetch:', e);
-                document.getElementById('last-update').textContent = 'OFFLINE';
+                const resp = await fetch('./data/live_data.json');
+                const mktData = await resp.json();
+                fullData.markets = mktData.markets || [];
+
+                const newsResp = await fetch('./data/news.json');
+                const newsData = await newsResp.json();
+                fullData.news = newsData.articles || [];
+
+                const whaleResp = await fetch('./data/whales.json');
+                const whaleData = await whaleResp.json();
+                fullData.whales = whaleData.top_whales || [];
+
+                document.getElementById('status').textContent = `${fullData.markets.length} markets loaded`;
+                render();
+            } catch(e) {
+                console.error(e);
+                document.getElementById('status').textContent = 'Error: ' + e.message;
             }
         }
-        
-        // Load immediately
-        render();
-        
-        // Update every 3 seconds
-        setInterval(fetchData, 3000);
+
+        function render() {
+            renderCats();
+            applyFilter();
+            renderNews();
+            renderWhales();
+        }
+
+        function renderCats() {
+            const cats = {};
+            fullData.markets.forEach(m => {
+                const c = m.category || 'other';
+                cats[c] = (cats[c] || 0) + 1;
+            });
+
+            let html = `<div class="filter ${filter==='all'?'active':''}" onclick="setFilter('all')">All (${fullData.markets.length})</div>`;
+            for (const [c, n] of Object.entries(cats)) {
+                html += `<div class="filter ${filter===c?'active':''}" onclick="setFilter('${c}')">${c} (${n})</div>`;
+            }
+            document.getElementById('categories').innerHTML = html;
+        }
+
+        function setFilter(cat) {
+            filter = cat;
+            renderCats();
+            applyFilter();
+        }
+
+        function applyFilter() {
+            const q = document.getElementById('search').value.toLowerCase();
+            let mkts = fullData.markets.filter(m => {
+                const catOk = filter === 'all' || (m.category || 'other') === filter;
+                const qOk = !q || m.title.toLowerCase().includes(q);
+                return catOk && qOk;
+            }).sort((a,b) => b.liquidity - a.liquidity);
+
+            let html = mkts.map(m => `
+                <div class="market">
+                    <div class="market-title">${m.title}</div>
+                    <div class="market-prices">
+                        <span class="bid">Bid $${m.bid.toFixed(3)}</span>
+                        <span class="ask">Ask $${m.ask.toFixed(3)}</span>
+                    </div>
+                    <div class="stats">
+                        <div>Liq: $${(m.liquidity/1e6).toFixed(1)}M</div>
+                        <div>Vol: $${(m.volume_24h/1e3).toFixed(0)}K</div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('markets').innerHTML = html || '<div style="color: #cbd5e1;">No markets found</div>';
+        }
+
+        function renderNews() {
+            let html = fullData.news.slice(0, 5).map(n => `
+                <a href="${n.url}" target="_blank" style="text-decoration:none; color:inherit;">
+                    <div class="news-item">
+                        <div class="news-title">${n.title}</div>
+                        <div class="news-source">${n.source}</div>
+                    </div>
+                </a>
+            `).join('');
+            document.getElementById('news').innerHTML = html || '<div style="font-size: 11px; color: #cbd5e1;">No news</div>';
+        }
+
+        function renderWhales() {
+            let html = fullData.whales.slice(0, 5).map(w => `
+                <div style="background: rgba(51,65,85,0.2); border: 1px solid #334; border-radius: 4px; padding: 8px; margin-bottom: 8px; font-size: 10px;">
+                    <div style="color: #06b6d4; font-family: monospace; word-break: break-all; margin-bottom: 4px;">${w.address}</div>
+                    <div>Trades: ${w.trades_30d || 0}</div>
+                    <div>Win: ${((w.win_rate || 0)*100).toFixed(0)}%</div>
+                    <div>PnL: $${Math.abs(w.pnl_30d || 0).toLocaleString()}</div>
+                </div>
+            `).join('');
+            document.getElementById('whales').innerHTML = html || '<div style="font-size: 11px; color: #cbd5e1;">No whales</div>';
+        }
+
+        window.addEventListener('load', load);
+        setInterval(load, 60000);
     </script>
 </body>
 </html>
