@@ -517,14 +517,14 @@
         async function loadData() {
             try {
                 // Load market data
-                const marketResponse = await fetch('../data/live_data.json');
+                const marketResponse = await fetch('./data/live_data.json');
                 const marketData = await marketResponse.json();
                 allData.markets = marketData.markets || [];
                 allData.timestamp = marketData.timestamp;
 
                 // Load news data
                 try {
-                    const newsResponse = await fetch('../data/news.json');
+                    const newsResponse = await fetch('./data/news.json');
                     const newsData = await newsResponse.json();
                     allData.news = newsData.articles || [];
                 } catch {
@@ -533,7 +533,7 @@
 
                 // Load whale data
                 try {
-                    const whaleResponse = await fetch('../data/whales.json');
+                    const whaleResponse = await fetch('./data/whales.json');
                     const whaleData = await whaleResponse.json();
                     allData.whales = whaleData.top_whales || [];
                 } catch {
