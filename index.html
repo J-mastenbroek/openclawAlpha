@@ -211,6 +211,37 @@
             font-size: 11px;
         }
         
+        .regime-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 6px;
+        }
+        
+        .regime-trending {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .regime-range {
+            background: #dbeafe;
+            color: #0c4a6e;
+        }
+        
+        .regime-volatile {
+            background: #fed7aa;
+            color: #92400e;
+        }
+        
+        .regime-illiquid {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+        
         /* WHALES BOX */
         .whale-item {
             padding: 12px 16px;
@@ -332,6 +363,7 @@
                 <div style="display: flex; gap: 8px; padding: 8px 0; flex-wrap: wrap;">
                     <button class="sort-btn" data-sort="volume" style="background: #fef3c7; color: #b45309;">📈 Volume</button>
                     <button class="sort-btn" data-sort="spread" style="background: #dbeafe; color: #0369a1;">📊 Spread</button>
+                    <button class="sort-btn" data-sort="regime" style="background: #e0e7ff; color: #4f46e5;">🎯 Regime</button>
                     <button class="sort-btn" data-sort="name" style="background: #f3e8ff; color: #6b21a8;">A-Z</button>
                 </div>
             </div>
@@ -414,11 +446,19 @@
         
         function sortMarkets(markets, sortBy) {
             const copy = [...markets];
+            const regimeOrder = { 'TRENDING': 0, 'RANGE': 1, 'VOLATILE': 2, 'ILLIQUID': 3 };
+            
             switch(sortBy) {
                 case 'volume':
                     return copy.sort((a, b) => (b.volume_24h || 0) - (a.volume_24h || 0));
                 case 'spread':
                     return copy.sort((a, b) => (a.spread || 9999) - (b.spread || 9999));
+                case 'regime':
+                    return copy.sort((a, b) => {
+                        const aRegime = detectMarketRegime(a).regime;
+                        const bRegime = detectMarketRegime(b).regime;
+                        return (regimeOrder[aRegime] || 99) - (regimeOrder[bRegime] || 99);
+                    });
                 case 'name':
                     return copy.sort((a, b) => a.name.localeCompare(b.name));
                 default:
@@ -444,19 +484,55 @@
             }
         }
         
+        function detectMarketRegime(market) {
+            // Market regime classification based on spread, liquidity, and volume
+            const spread = market.spread || 0;
+            const liquidity = market.liquidity || 0;
+            const volume24h = market.volume_24h || 0;
+            
+            // ILLIQUID: No volume in 24h or spread > 50%
+            if (volume24h === 0 || spread > 50) {
+                return { regime: 'ILLIQUID', class: 'regime-illiquid', icon: '⚠️' };
+            }
+            
+            // VOLATILE: High spread (20-50%) with volume
+            if (spread > 20) {
+                return { regime: 'VOLATILE', class: 'regime-volatile', icon: '⚡' };
+            }
+            
+            // RANGE-BOUND: Tight spread (5-20%) with steady liquidity
+            if (spread >= 5 && spread <= 20 && liquidity > 100) {
+                return { regime: 'RANGE', class: 'regime-range', icon: '📊' };
+            }
+            
+            // TRENDING: Very tight spread (<5%) with strong volume
+            if (spread < 5 && volume24h > 100) {
+                return { regime: 'TRENDING', class: 'regime-trending', icon: '📈' };
+            }
+            
+            // Default to range-bound
+            return { regime: 'RANGE', class: 'regime-range', icon: '📊' };
+        }
+        
         function displayMarkets(markets) {
             const container = document.getElementById('markets-box');
             const sorted = sortMarkets(markets, currentSort);
-            container.innerHTML = sorted.map(m => `
+            container.innerHTML = sorted.map(m => {
+                const regimeInfo = detectMarketRegime(m);
+                return `
                 <div class="market-item">
-                    <div class="market-name" title="${m.name}">${m.name}</div>
+                    <div class="market-name" title="${m.name}">
+                        ${m.name}
+                        <span class="regime-badge ${regimeInfo.class}" title="Market Regime">${regimeInfo.icon} ${regimeInfo.regime}</span>
+                    </div>
                     <div class="market-price">
                         <span class="price-bid">${m.bid ? m.bid.toFixed(2) : '—'}</span>
                         <span class="price-ask">${m.ask ? m.ask.toFixed(2) : '—'}</span>
                         <span class="price-vol">${m.volume_24h ? ($${(m.volume_24h / 1000).toFixed(0)}k) : ''}</span>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
         
         // Sort button handlers
