@@ -54,11 +54,6 @@
             animation: pulse 2s infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-        
         .main {
             display: grid;
             grid-template-columns: 1fr 2fr 1fr;
@@ -136,7 +131,12 @@
         
         .news-source {
             font-size: 10px;
-            color: #666;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .news-source:hover {
+            text-decoration: underline;
         }
         
         /* MARKETS */
@@ -145,7 +145,7 @@
             padding: 10px 16px;
             border-bottom: 1px solid #f0f0f0;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             cursor: pointer;
             font-size: 11px;
         }
@@ -154,13 +154,18 @@
             background: #f9f9f9;
         }
         
-        .market-name {
-            flex: 1;
+        .market-link {
+            color: #0066cc;
+            text-decoration: none;
             font-weight: 500;
-            color: #1a1a1a;
+            flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+        
+        .market-link:hover {
+            text-decoration: underline;
         }
         
         .market-prices {
@@ -202,7 +207,7 @@
             background: #f9f9f9;
         }
         
-        .whale-addr {
+        .whale-link {
             background: #fef3c7;
             color: #92400e;
             padding: 3px 6px;
@@ -213,8 +218,9 @@
             text-decoration: none;
         }
         
-        .whale-addr:hover {
+        .whale-link:hover {
             background: #fcd34d;
+            text-decoration: none;
         }
         
         .whale-stats {
@@ -260,6 +266,13 @@
             font-size: 12px;
         }
         
+        .error {
+            padding: 20px 16px;
+            text-align: center;
+            color: #dc2626;
+            font-size: 12px;
+        }
+        
         @media (max-width: 1400px) {
             .main {
                 grid-template-columns: 1fr 1fr;
@@ -299,7 +312,7 @@
         <div class="logo">POLYBERG</div>
         <div class="status">
             <div class="dot"></div>
-            <span>LIVE</span>
+            <span id="last-update">CHECKING...</span>
         </div>
     </div>
     
@@ -308,7 +321,7 @@
         <div class="panel">
             <div class="panel-header">📰 News</div>
             <div class="panel-content" id="news-list"></div>
-            <div class="panel-footer" id="news-time"></div>
+            <div class="panel-footer" id="news-footer"></div>
         </div>
         
         <!-- MARKETS PANEL -->
@@ -318,34 +331,28 @@
                 <input type="text" id="search" placeholder="Search markets...">
             </div>
             <div class="panel-content" id="markets-list"></div>
-            <div class="panel-footer" id="markets-time"></div>
+            <div class="panel-footer" id="markets-footer"></div>
         </div>
         
         <!-- WHALES PANEL -->
         <div class="panel">
             <div class="panel-header">🐋 Top Wallets</div>
             <div class="panel-content" id="whales-list"></div>
-            <div class="panel-footer" id="whales-time"></div>
+            <div class="panel-footer" id="whales-footer"></div>
         </div>
     </div>
     
     <script>
-        let data = {
-            timestamp: new Date().toISOString(),
-            markets: [],
-            whales: [],
-            news: []
-        };
-        
+        let data = { timestamp: new Date().toISOString(), markets: [], whales: [], news: [] };
         let filteredMarkets = [];
         
         function timeAgo(isoString) {
             const date = new Date(isoString);
             const seconds = Math.floor((new Date() - date) / 1000);
-            if (seconds < 60) return 'now';
-            if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
-            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
-            return Math.floor(seconds / 86400) + 'd';
+            if (seconds < 60) return 'just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            return Math.floor(seconds / 86400) + 'd ago';
         }
         
         function renderNews() {
@@ -353,7 +360,8 @@
             const news = data.news || [];
             
             if (news.length === 0) {
-                list.innerHTML = '<div class="empty">Loading news...</div>';
+                list.innerHTML = '<div class="empty">No news data</div>';
+                document.getElementById('news-footer').textContent = 'Check data source';
                 return;
             }
             
@@ -361,11 +369,11 @@
                 <div class="news-item">
                     <div class="news-time">${timeAgo(n.time)}</div>
                     <div class="news-title">${n.title}</div>
-                    <div class="news-source">${n.source}</div>
+                    <a class="news-source" href="${n.url}" target="_blank">${n.source}</a>
                 </div>
             `).join('');
             
-            document.getElementById('news-time').textContent = `Updated ${timeAgo(data.timestamp)}`;
+            document.getElementById('news-footer').textContent = `${news.length} articles • Updated ${timeAgo(data.timestamp)}`;
         }
         
         function renderMarkets() {
@@ -373,26 +381,34 @@
             const markets = data.markets || [];
             
             if (markets.length === 0) {
-                list.innerHTML = '<div class="empty">Loading markets...</div>';
+                list.innerHTML = '<div class="error">⚠️ No live market data available. Check API connection.</div>';
+                document.getElementById('markets-footer').textContent = 'Data source: API error';
                 return;
             }
             
             filteredMarkets = markets;
             displayMarkets(filteredMarkets);
             
-            document.getElementById('markets-time').textContent = `${markets.length} active • ${timeAgo(data.timestamp)}`;
+            document.getElementById('markets-footer').textContent = `${markets.length} live • ${timeAgo(data.timestamp)} • Click to verify`;
         }
         
         function displayMarkets(markets) {
             const list = document.getElementById('markets-list');
             
+            if (markets.length === 0) {
+                list.innerHTML = '<div class="empty">No matches</div>';
+                return;
+            }
+            
             list.innerHTML = markets.map(m => `
                 <div class="market-row">
-                    <div class="market-name" title="${m.name}">${m.name}</div>
+                    <a class="market-link" href="https://polymarket.com/markets?market=${m.id}" target="_blank" title="Click to verify on Polymarket">
+                        ${m.name}
+                    </a>
                     <div class="market-prices">
                         <span class="bid">${m.bid.toFixed(2)}</span>
                         <span class="ask">${m.ask.toFixed(2)}</span>
-                        <span class="vol">${m.volume_24h ? '$' + (m.volume_24h / 1000).toFixed(0) + 'k' : ''}</span>
+                        ${m.volume_24h ? `<span class="vol">$${(m.volume_24h / 1000).toFixed(0)}k</span>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -408,14 +424,15 @@
             const whales = data.whales || [];
             
             if (whales.length === 0) {
-                list.innerHTML = '<div class="empty">Loading wallets...</div>';
+                list.innerHTML = '<div class="empty">No whale data</div>';
+                document.getElementById('whales-footer').textContent = 'Check data source';
                 return;
             }
             
             list.innerHTML = whales.map(w => `
                 <div class="whale-row">
-                    <a class="whale-addr" href="https://polymarket.com/profile/${w.address}" target="_blank">
-                        ${w.address.slice(0, 6)}...
+                    <a class="whale-link" href="https://polymarket.com/profile/${w.address}" target="_blank" title="View wallet on Polymarket">
+                        ${w.address.slice(0, 6)}...${w.address.slice(-4)}
                     </a>
                     <div class="whale-stats">
                         <div class="stat">
@@ -427,41 +444,58 @@
                             <div class="stat-value">${(w.win_rate * 100).toFixed(0)}%</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-label">PnL</div>
+                            <div class="stat-label">30d PnL</div>
                             <div class="stat-value ${w.pnl_30d >= 0 ? 'profit' : 'loss'}">
-                                $${Math.abs(w.pnl_30d / 1000).toFixed(0)}k
+                                ${w.pnl_30d >= 0 ? '+' : ''}$${(w.pnl_30d / 1000).toFixed(0)}k
                             </div>
                         </div>
                     </div>
                 </div>
             `).join('');
             
-            document.getElementById('whales-time').textContent = `${whales.length} tracked • ${timeAgo(data.timestamp)}`;
+            document.getElementById('whales-footer').textContent = `${whales.length} tracked • ${timeAgo(data.timestamp)} • Click to verify`;
         }
         
         function render() {
             renderNews();
             renderMarkets();
             renderWhales();
+            
+            const now = new Date();
+            const timestamp = data.timestamp ? new Date(data.timestamp) : now;
+            const diffSecs = Math.floor((now - timestamp) / 1000);
+            
+            if (diffSecs < 60) {
+                document.getElementById('last-update').textContent = 'LIVE NOW';
+            } else if (diffSecs < 300) {
+                document.getElementById('last-update').textContent = `${Math.floor(diffSecs / 60)}m ago`;
+            } else {
+                document.getElementById('last-update').textContent = 'STALE (>5min)';
+            }
         }
         
         async function fetchData() {
             try {
                 const res = await fetch('data/live_data.json?t=' + Date.now());
                 if (res.ok) {
-                    data = await res.json();
+                    const newData = await res.json();
+                    // Only update if newer
+                    if (newData.timestamp > data.timestamp) {
+                        data = newData;
+                    }
                     render();
                 }
             } catch (e) {
-                console.error('Fetch error:', e);
+                console.error('Fetch:', e);
+                document.getElementById('last-update').textContent = 'OFFLINE';
             }
         }
         
         // Load immediately
         render();
         
-        // Update every 5 seconds
-        setInterval(fetchData, 5000);
+        // Update every 3 seconds
+        setInterval(fetchData, 3000);
     </script>
 </body>
 </html>
