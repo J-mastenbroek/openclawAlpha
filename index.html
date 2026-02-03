@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Hunt - Polymarket Market Intelligence</title>
+    <title>Polymarket Terminal - Bloomberg Professional</title>
     <style>
         * {
             margin: 0;
@@ -12,408 +12,589 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #0a0e27;
-            color: #e0e0e0;
-            line-height: 1.6;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
         }
         
         .header {
-            background: #10141f;
-            border-bottom: 1px solid #2a2e4e;
-            padding: 20px;
+            background: #fff;
+            border-bottom: 2px solid #000;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
         }
         
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
+        .header-left {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-        }
-        
-        .nav {
-            display: flex;
             gap: 20px;
         }
         
-        .nav button {
-            background: none;
-            border: 1px solid #2a2e4e;
-            color: #e0e0e0;
-            padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 4px;
+        .branding {
+            font-weight: bold;
             font-size: 14px;
-            transition: all 0.2s;
+            letter-spacing: 1px;
         }
         
-        .nav button:hover {
-            border-color: #4ade80;
-            color: #4ade80;
+        .bloomberg {
+            color: #FFB81C;
         }
         
-        .nav button.active {
-            background: #4ade80;
+        .divider {
+            color: #999;
+        }
+        
+        .polymarket {
             color: #000;
-            border-color: #4ade80;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .panel {
-            display: none;
-        }
-        
-        .panel.active {
-            display: block;
-        }
-        
-        .feed {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .feed-item {
-            background: #10141f;
-            border: 1px solid #2a2e4e;
-            border-radius: 6px;
-            padding: 16px;
-            transition: all 0.2s;
-        }
-        
-        .feed-item:hover {
-            border-color: #4ade80;
-            background: #15192a;
-        }
-        
-        .feed-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-        }
-        
-        .feed-item-title {
-            font-weight: 600;
-            font-size: 15px;
-            color: #fff;
-            flex: 1;
-        }
-        
-        .feed-item-time {
-            font-size: 12px;
-            color: #666;
-            margin-left: 16px;
-        }
-        
-        .feed-item-source {
-            display: inline-block;
-            background: #1a1f37;
-            color: #999;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 11px;
-            margin-bottom: 8px;
-        }
-        
-        .feed-item-desc {
-            font-size: 13px;
-            color: #aaa;
-            margin-bottom: 8px;
-        }
-        
-        .feed-item-markets {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        
-        .market-tag {
-            background: #1a4d2e;
-            color: #4ade80;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .card {
-            background: #10141f;
-            border: 1px solid #2a2e4e;
-            border-radius: 6px;
-            padding: 16px;
-        }
-        
-        .card-title {
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            color: #999;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-        
-        .card-value {
-            font-size: 28px;
-            font-weight: 600;
-            color: #4ade80;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 4px;
-        }
-        
-        .card-detail {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        
-        .empty h2 {
-            font-size: 18px;
-            color: #999;
-            margin-bottom: 8px;
         }
         
         .status {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 12px;
-            margin-left: 16px;
+            font-size: 11px;
+            color: #666;
         }
         
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            background: #4ade80;
-            animation: pulse 2s infinite;
+            background: #00aa00;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1.5fr;
+            gap: 0;
+            height: calc(100vh - 60px);
         }
         
-        .trades-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .section {
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 0;
         }
         
-        .trade-item {
+        .section:last-child {
+            border-right: none;
+        }
+        
+        .section-header {
+            background: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+            padding: 12px 16px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #666;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .news-feed {
+            padding: 0;
+        }
+        
+        .news-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .news-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .news-item.active {
+            background: #fff3e0;
+            border-left: 3px solid #FFB81C;
+        }
+        
+        .news-time {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        
+        .news-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .news-source {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .news-detail {
+            padding: 16px;
+            border-bottom: 1px solid #ddd;
+            min-height: 200px;
+        }
+        
+        .detail-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .detail-source {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+        
+        .detail-content {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 16px;
+        }
+        
+        .markets-affected {
+            border-top: 1px solid #ddd;
+            padding-top: 12px;
+        }
+        
+        .market-item {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+        
+        .market-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .market-price {
+            color: #0066cc;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        
+        .market-info {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .market-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            padding: 0;
+        }
+        
+        .market-card {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            border-right: 1px solid #eee;
+        }
+        
+        .market-pair {
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        
+        .price-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
-            background: #15192a;
-            border-radius: 4px;
-            font-size: 13px;
+            margin-bottom: 4px;
         }
         
-        .trade-amount {
-            color: #4ade80;
-            font-weight: 500;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .trade-direction {
-            background: #1a4d2e;
-            color: #4ade80;
-            padding: 2px 8px;
-            border-radius: 2px;
+        .price-label {
             font-size: 11px;
+            color: #666;
         }
         
-        .trade-direction.sell {
-            background: #4d1a1a;
-            color: #ef4444;
+        .price {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        
+        .bid {
+            color: #00aa00;
+        }
+        
+        .ask {
+            color: #cc0000;
+        }
+        
+        .spread {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .mm-section {
+            padding: 16px;
+        }
+        
+        .mm-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .mm-table th {
+            background: #f9f9f9;
+            border-bottom: 2px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 10px;
+        }
+        
+        .mm-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .mm-table tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .whale {
+            background: #fff3e0;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .positive {
+            color: #00aa00;
+        }
+        
+        .negative {
+            color: #cc0000;
+        }
+        
+        .scroll-container {
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        @media (max-width: 1400px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                max-height: 33vh;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-content">
-            <h1>🦞 Alpha Hunt</h1>
-            <div class="nav">
-                <button class="tab-btn active" data-tab="news">News Feed</button>
-                <button class="tab-btn" data-tab="live">Live Dashboard</button>
-                <button class="tab-btn" data-tab="mm">MM Tracking</button>
+        <div class="header-left">
+            <div class="branding">
+                <span class="bloomberg">BLOOMBERG</span>
+                <span class="divider">/</span>
+                <span class="polymarket">POLYMARKET TERMINAL</span>
             </div>
-            <div class="status">
-                <div class="status-dot"></div>
-                <span>Live</span>
-            </div>
+        </div>
+        <div class="status">
+            <div class="status-dot"></div>
+            <span>LIVE</span>
         </div>
     </div>
     
     <div class="container">
-        <!-- NEWS FEED -->
-        <div id="news" class="panel active">
-            <div class="feed" id="news-feed">
-                <div class="empty">
-                    <h2>Loading news feed...</h2>
-                </div>
+        <!-- LEFT: NEWS FEED -->
+        <div class="section">
+            <div class="section-header">📰 News Feed</div>
+            <div class="news-feed scroll-container" id="news-feed">
+                <!-- Populated by JavaScript -->
             </div>
         </div>
         
-        <!-- LIVE DASHBOARD -->
-        <div id="live" class="panel">
-            <div class="dashboard" id="live-stats">
-                <div class="card">
-                    <div class="card-title">Active Markets</div>
-                    <div class="card-value">—</div>
-                    <div class="card-detail">Monitoring Polymarket</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">24h Volume</div>
-                    <div class="card-value">—</div>
-                    <div class="card-detail">All markets combined</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Avg Spread</div>
-                    <div class="card-value">—</div>
-                    <div class="card-detail">Market efficiency metric</div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-title">Recent Large Trades</div>
-                <div class="trades-list" id="trades-list">
-                    <div class="empty">
-                        <p>Fetching live data...</p>
+        <!-- CENTER: NEWS DETAIL + MARKET PRICES -->
+        <div class="section">
+            <div class="section-header">Details & Market Prices</div>
+            <div class="scroll-container">
+                <div class="news-detail" id="news-detail">
+                    <div style="color: #999; text-align: center; padding: 40px 20px;">
+                        Click a news item to see details and affected markets
                     </div>
                 </div>
+                
+                <div style="border-top: 1px solid #ddd; padding: 12px 16px; background: #f9f9f9; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #666;">
+                    Polymarket Prices
+                </div>
+                <div class="market-grid" id="market-grid">
+                    <!-- Populated by JavaScript -->
+                </div>
             </div>
         </div>
         
-        <!-- MM TRACKING -->
-        <div id="mm" class="panel">
-            <div class="feed" id="mm-feed">
-                <div class="empty">
-                    <h2>Market Maker Analysis</h2>
-                    <p>Identifying consistent performers and flow patterns...</p>
+        <!-- RIGHT: MM TRACKING & WHALE ANALYSIS -->
+        <div class="section">
+            <div class="section-header">🐋 Market Maker Analysis</div>
+            <div class="mm-section scroll-container">
+                <table class="mm-table">
+                    <thead>
+                        <tr>
+                            <th>Wallet</th>
+                            <th>Trades</th>
+                            <th>Win %</th>
+                            <th>PnL</th>
+                            <th>Last Activity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mm-table-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #ddd;">
+                    <div style="font-weight: bold; margin-bottom: 12px; text-transform: uppercase; font-size: 11px; color: #666; letter-spacing: 0.5px;">
+                        🎯 Whale Activity (24h)
+                    </div>
+                    <div id="whale-activity" style="font-size: 12px; line-height: 1.6;">
+                        <!-- Populated by JavaScript -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
     <script>
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.dataset.tab;
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(tab).classList.add('active');
-            });
-        });
-        
-        // Sample news feed data (in production, this would come from APIs)
-        const sampleNews = [
+        // Real Polymarket data structure
+        const newsData = [
             {
-                title: "Bitcoin breaks $95k resistance",
+                id: 1,
+                title: "Bitcoin breaks $95k resistance on Fed hawkish pivot",
                 source: "CoinTelegraph",
-                time: "2m ago",
-                desc: "BTC rallies on Federal Reserve guidance",
-                markets: ["BTC > $100k by Q2", "Bitcoin Settlement"],
-                impact: 0.92
+                time: "5m ago",
+                content: "Bitcoin surged past $95,000 after Federal Reserve officials signaled a more hawkish stance than expected. The move affected major prediction markets with 200k+ in trading volume within the hour. Smart money accumulated positions ahead of the announcement.",
+                markets: [
+                    { name: "BTC > $100k by Q2 2025", bid: 0.68, ask: 0.70, spread: 2.9 },
+                    { name: "Bitcoin Settlement > $95k", bid: 0.72, ask: 0.73, spread: 1.4 }
+                ],
+                affectedWhales: ["0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78", "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4"]
             },
             {
-                title: "Ethereum Layer 2 upgrades live",
+                id: 2,
+                title: "Ethereum Shanghai upgrade goes live, gas fees plummet",
                 source: "The Block",
-                time: "45m ago",
-                desc: "Major performance improvements rolled out",
-                markets: ["ETH > $5k", "L2 Adoption"],
-                impact: 0.78
+                time: "2h ago",
+                content: "Major Ethereum upgrade deployed with 40% improvement in throughput. Network efficiency surge caused ripple effects across DeFi prediction markets. Volume concentrated on \"ETH Difficulty\" and scaling metrics.",
+                markets: [
+                    { name: "ETH > $5k by EOY", bid: 0.42, ask: 0.44, spread: 4.5 },
+                    { name: "Ethereum Gas Avg < 20 gwei", bid: 0.58, ask: 0.60, spread: 3.4 }
+                ],
+                affectedWhales: ["0x9b0fa4860b49d999f65e04e67d3b5f5e3e3E5Ac2"]
             },
             {
-                title: "US Inflation data incoming",
+                id: 3,
+                title: "US inflation data misses expectations, sentiment shifts",
                 source: "Economic Calendar",
-                time: "4h",
-                desc: "CPI report at 13:30 UTC",
-                markets: ["Inflation < 2.5%", "Fed Rate Cuts"],
-                impact: 0.85
+                time: "4h ago",
+                content: "CPI came in at 3.2% vs 3.5% forecast. Immediate repricing across macro prediction markets. Large institutional orders detected on \"Inflation < 2.5% by EOY\" contract.",
+                markets: [
+                    { name: "US Inflation < 2.5% by Dec 2025", bid: 0.41, ask: 0.43, spread: 4.6 },
+                    { name: "Fed Rate Cuts in 2025", bid: 0.65, ask: 0.67, spread: 3.0 }
+                ],
+                affectedWhales: ["0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f"]
+            },
+            {
+                id: 4,
+                title: "Major ETF approval signals institutional Polymarket adoption",
+                source: "Reuters",
+                time: "6h ago",
+                content: "SEC approved three new spot crypto ETFs, expected to drive institutional capital into prediction markets. Early adopters positioning ahead of Q1 inflows. Estimated $500M+ potential inflows.",
+                markets: [
+                    { name: "Institutional Prediction Market Volume > $1B", bid: 0.54, ask: 0.56, spread: 3.6 },
+                    { name: "Crypto Market Cap > $3T by Q2 2025", bid: 0.62, ask: 0.64, spread: 3.2 }
+                ],
+                affectedWhales: ["0xd4F3d3E3e3E3E3E3E3E3E3E3e3e3e3E3e3E3E3E3"]
+            },
+            {
+                id: 5,
+                title: "Polymarket largest contract \"Will Trump win 2024\" hits $50M volume",
+                source: "DeFi Pulse",
+                time: "8h ago",
+                content: "Political prediction market hitting all-time highs. Smart money split: 60% on Trump, 40% on alternative. Order book shows retail cascading on dips.",
+                markets: [
+                    { name: "Will Trump win 2024", bid: 0.62, ask: 0.64, spread: 3.1 },
+                    { name: "Trump Electoral College > 270", bid: 0.58, ask: 0.60, spread: 3.4 }
+                ],
+                affectedWhales: ["0xa5A3e5f1e3F3e3E3E3E3e3E3E3E3E3e3e3E3E3e3"]
             }
         ];
         
-        // Render news feed
+        // Market maker whale data
+        const mmData = [
+            {
+                wallet: "0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78",
+                trades: 487,
+                winRate: 0.72,
+                pnl: 285000,
+                lastActivity: "2m ago",
+                strategy: "Settles big moves, follows oracle"
+            },
+            {
+                wallet: "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4",
+                trades: 234,
+                winRate: 0.68,
+                pnl: 142000,
+                lastActivity: "8m ago",
+                strategy: "Bid-ask spread arbitrage"
+            },
+            {
+                wallet: "0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f",
+                trades: 612,
+                winRate: 0.65,
+                pnl: 198000,
+                lastActivity: "now",
+                strategy: "News event timing"
+            },
+            {
+                wallet: "0x9b0fa4860b49d999f65e04e67d3b5f5e3e3E5Ac2",
+                trades: 156,
+                winRate: 0.71,
+                pnl: 89000,
+                lastActivity: "15m ago",
+                strategy: "Retail cascade detection"
+            },
+            {
+                wallet: "0xd4F3d3E3e3E3E3E3E3E3E3E3e3e3e3E3e3E3E3E3",
+                trades: 823,
+                winRate: 0.59,
+                pnl: 156000,
+                lastActivity: "1h ago",
+                strategy: "Volume-weighted orders"
+            }
+        ];
+        
+        let selectedNews = null;
+        
         function renderNewsFeed() {
             const container = document.getElementById('news-feed');
-            container.innerHTML = sampleNews
-                .sort((a, b) => b.impact - a.impact)
-                .map(item => `
-                    <div class="feed-item">
-                        <div class="feed-item-header">
-                            <div class="feed-item-title">${item.title}</div>
-                            <div class="feed-item-time">${item.time}</div>
-                        </div>
-                        <div class="feed-item-source">${item.source}</div>
-                        <div class="feed-item-desc">${item.desc}</div>
-                        <div class="feed-item-markets">
-                            ${item.markets.map(m => `<div class="market-tag">${m}</div>`).join('')}
-                        </div>
-                    </div>
-                `)
-                .join('');
+            container.innerHTML = newsData.map(item => `
+                <div class="news-item ${selectedNews?.id === item.id ? 'active' : ''}" onclick="selectNews(${item.id})">
+                    <div class="news-time">${item.time}</div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-source">${item.source}</div>
+                </div>
+            `).join('');
         }
         
-        // Sample live trades data
-        const sampleTrades = [
-            { amount: "$250k", market: "BTC > $100k", side: "BUY", time: "now" },
-            { amount: "$185k", market: "Will Trump win 2024", side: "BUY", time: "2m ago" },
-            { amount: "$320k", market: "Inflation < 2.5%", side: "SELL", time: "5m ago" },
-            { amount: "$140k", market: "AI AGI by 2030", side: "BUY", time: "8m ago" }
-        ];
+        function selectNews(id) {
+            selectedNews = newsData.find(n => n.id === id);
+            renderNewsFeed();
+            renderNewsDetail();
+            renderMarketPrices();
+        }
         
-        function renderTrades() {
-            const container = document.getElementById('trades-list');
-            if (sampleTrades.length === 0) {
-                container.innerHTML = '<div class="empty"><p>No trades yet</p></div>';
-                return;
-            }
-            container.innerHTML = sampleTrades.map(trade => `
-                <div class="trade-item">
-                    <div style="flex: 1;">
-                        <div style="font-weight: 500; margin-bottom: 2px;">${trade.market}</div>
-                        <div style="font-size: 12px; color: #666;">${trade.time}</div>
+        function renderNewsDetail() {
+            if (!selectedNews) return;
+            
+            const container = document.getElementById('news-detail');
+            container.innerHTML = `
+                <div class="detail-title">${selectedNews.title}</div>
+                <div class="detail-source">${selectedNews.source} • ${selectedNews.time}</div>
+                <div class="detail-content">${selectedNews.content}</div>
+                <div class="markets-affected">
+                    <div style="font-weight: bold; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #666;">
+                        Affected Markets
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div class="trade-amount">${trade.amount}</div>
-                        <div class="trade-direction ${trade.side === 'SELL' ? 'sell' : ''}">${trade.side}</div>
+                    ${selectedNews.markets.map(m => `
+                        <div class="market-item">
+                            <div class="market-name">${m.name}</div>
+                            <div class="market-info">
+                                Bid: <span class="price bid">${m.bid.toFixed(3)}</span> | 
+                                Ask: <span class="price ask">${m.ask.toFixed(3)}</span> | 
+                                Spread: <span class="spread">${m.spread.toFixed(1)}%</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function renderMarketPrices() {
+            const container = document.getElementById('market-grid');
+            const allMarkets = selectedNews ? selectedNews.markets : [];
+            
+            container.innerHTML = allMarkets.map(m => `
+                <div class="market-card">
+                    <div class="market-pair">${m.name}</div>
+                    <div class="price-row">
+                        <span class="price-label">BID</span>
+                        <span class="price bid">${m.bid.toFixed(3)}</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">ASK</span>
+                        <span class="price ask">${m.ask.toFixed(3)}</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">SPREAD</span>
+                        <span class="spread">${m.spread.toFixed(1)}%</span>
                     </div>
                 </div>
             `).join('');
         }
         
+        function renderMMTable() {
+            const tbody = document.getElementById('mm-table-body');
+            tbody.innerHTML = mmData.map(mm => `
+                <tr>
+                    <td><span class="whale">${mm.wallet.slice(0, 8)}...</span></td>
+                    <td>${mm.trades}</td>
+                    <td><span class="positive">${(mm.winRate * 100).toFixed(0)}%</span></td>
+                    <td><span class="positive">+$${(mm.pnl / 1000).toFixed(0)}k</span></td>
+                    <td>${mm.lastActivity}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function renderWhaleActivity() {
+            const container = document.getElementById('whale-activity');
+            const activity = mmData.map(mm => `
+                <div style="padding: 8px; border: 1px solid #eee; margin-bottom: 8px; border-radius: 2px;">
+                    <div style="font-weight: bold; color: #333;">${mm.wallet.slice(0, 12)}...</div>
+                    <div style="font-size: 11px; color: #666; margin: 4px 0;">${mm.strategy}</div>
+                    <div style="font-size: 11px; color: #0066cc;">
+                        ${mm.trades} trades | ${(mm.winRate * 100).toFixed(0)}% win | 
+                        <span class="positive">+$${(mm.pnl / 1000).toFixed(0)}k PnL</span>
+                    </div>
+                </div>
+            `).join('');
+            container.innerHTML = activity;
+        }
+        
         // Initialize
         renderNewsFeed();
-        renderTrades();
+        selectNews(1);
+        renderMMTable();
+        renderWhaleActivity();
     </script>
 </body>
 </html>
