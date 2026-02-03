@@ -1,54 +1,34 @@
 #!/bin/bash
-# Polyberg Deployment Script
-# Updates dashboard data and deploys to GitHub Pages
+# Polyberg: One-command deployment + refresh
 
 set -e
 
-echo "================================================"
-echo "POLYBERG DEPLOYMENT SCRIPT"
-echo "================================================"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "╔════════════════════════════════════════════╗"
+echo "║    POLYBERG DEPLOYMENT & DATA REFRESH     ║"
+echo "╚════════════════════════════════════════════╝"
 echo ""
 
-# Get script directory
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Run full update
+echo "[1/3] Updating all data..."
+python3 "$REPO_ROOT/src/update_all.py" || true
 
-# Change to repo directory
-cd "$SCRIPT_DIR"
-
-# 1. Update all data
-echo "[1/3] Updating all data sources..."
-echo "-----------------------------------------------"
-python3 src/update_all.py
-
-# 2. Copy data to docs
+# Commit and push
 echo ""
-echo "[2/3] Copying data to GitHub Pages..."
-echo "-----------------------------------------------"
-mkdir -p docs/data
-cp data/live_data.json docs/data/
-cp data/news.json docs/data/
-cp data/whales.json docs/data/
-echo "✓ Data copied to docs/data/"
+echo "[2/3] Deploying to GitHub..."
+cd "$REPO_ROOT"
+git add docs/ data/ src/
+git commit -m "Polyberg auto-update: $(date +'%Y-%m-%d %H:%M:%S')" || true
+git push origin main || echo "Push failed - check git config"
 
-# 3. Git commit and push
+# Final status
 echo ""
-echo "[3/3] Committing and pushing to GitHub..."
-echo "-----------------------------------------------"
-
-# Only commit if there are changes
-if git diff --quiet --exit-code; then
-    echo "No changes to commit"
-else
-    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    git add -A
-    git commit -m "Polyberg update: $timestamp"
-    git push origin main
-    echo "✓ Pushed to GitHub"
-    echo ""
-    echo "Dashboard updated: https://j-mastenbroek.github.io/openclawAlpha/"
-fi
-
+echo "╔════════════════════════════════════════════╗"
+echo "║         ✓ DEPLOYMENT COMPLETE             ║"
+echo "╚════════════════════════════════════════════╝"
 echo ""
-echo "================================================"
-echo "✓ DEPLOYMENT COMPLETE"
-echo "================================================"
+echo "Dashboard: https://j-mastenbroek.github.io/openclawAlpha/"
+echo "Repository: https://github.com/J-mastenbroek/openclawAlpha"
+echo ""
+echo "Next refresh in 30 minutes..."

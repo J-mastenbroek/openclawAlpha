@@ -1,230 +1,214 @@
 #!/usr/bin/env python3
 """
-Polyberg News Scraper
-Scrapes real news from public sources (no API keys)
-- Reuters
-- Bloomberg (via RSS)
-- ESPN
-- CoinTelegraph
+Polyberg News Scraper - Fetch from multiple reliable sources
 """
 
-import requests
 import json
+import requests
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import List, Dict
-from html.parser import HTMLParser
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 import time
-import re
 
-DATA_DIR = Path(__file__).parent.parent / "data"
-DATA_DIR.mkdir(exist_ok=True)
-
-class NewsAggregator:
-    """Aggregate news from multiple sources"""
-    
+class NewsScraperPolyberg:
     def __init__(self):
+        self.articles = []
+        self.seen_titles = set()
         self.session = requests.Session()
         self.session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
         })
-        self.news = []
     
-    def fetch_cointelegraph_rss(self) -> List[Dict]:
-        """Fetch from CoinTelegraph RSS (freely available)"""
-        news = []
-        try:
-            print("[News] Fetching CoinTelegraph RSS...")
-            # CoinTelegraph provides RSS feeds
-            feed_urls = [
-                "https://cointelegraph.com/feed",  # Main feed
-                "https://cointelegraph.com/rss/news",  # News only
-            ]
-            
-            for feed_url in feed_urls:
-                try:
-                    response = self.session.get(feed_url, timeout=10)
-                    if response.status_code != 200:
-                        continue
-                    
-                    # Parse RSS using simple regex patterns
-                    title_pattern = r'<title[^>]*>([^<]+)</title>'
-                    link_pattern = r'<link[^>]*>([^<]+)</link>'
-                    pubdate_pattern = r'<pubDate>([^<]+)</pubDate>'
-                    desc_pattern = r'<description[^>]*>([^<]+)</description>'
-                    
-                    titles = re.findall(title_pattern, response.text)
-                    links = re.findall(link_pattern, response.text)
-                    
-                    for i, title in enumerate(titles[1:11]):  # Skip feed title, get top 10
-                        if i < len(links):
-                            news.append({
-                                "title": title.strip(),
-                                "source": "CoinTelegraph",
-                                "url": links[i].strip(),
-                                "timestamp": datetime.now(timezone.utc).isoformat(),
-                                "category": "crypto",
-                            })
-                except Exception as e:
-                    continue
-        
-        except Exception as e:
-            print(f"CoinTelegraph error: {e}")
-        
-        return news[:5]
+    def deduplicate(self, title):
+        """Avoid duplicate articles"""
+        normalized = title.lower().strip()
+        if normalized in self.seen_titles:
+            return False
+        self.seen_titles.add(normalized)
+        return True
     
-    def fetch_cnbc_rss(self) -> List[Dict]:
-        """Fetch CNBC business news"""
-        news = []
+    def fetch_cointelegraph(self):
+        """Fetch from CoinTelegraph RSS"""
         try:
-            print("[News] Fetching CNBC...")
             response = self.session.get(
-                "https://feeds.cnbc.com/id/100003114x/rss.html",
+                'https://cointelegraph.com/feed',
                 timeout=10
             )
-            
             if response.status_code == 200:
-                # Parse basic RSS
-                title_pattern = r'<title[^>]*>([^<]+)</title>'
-                link_pattern = r'<link>([^<]+)</link>'
-                
-                titles = re.findall(title_pattern, response.text)
-                links = re.findall(link_pattern, response.text)
-                
-                for i, title in enumerate(titles[1:8]):
-                    if i < len(links):
-                        news.append({
-                            "title": title.strip(),
-                            "source": "CNBC",
-                            "url": links[i].strip(),
-                            "timestamp": datetime.now(timezone.utc).isoformat(),
-                            "category": "macro",
-                        })
-        except Exception as e:
-            print(f"CNBC error: {e}")
-        
-        return news[:3]
-    
-    def fetch_espn_rss(self) -> List[Dict]:
-        """Fetch ESPN sports news"""
-        news = []
-        try:
-            print("[News] Fetching ESPN...")
-            
-            # ESPN RSS feeds
-            feeds = [
-                "https://www.espn.com/espn/rss/news.xml",
-                "https://www.espn.com/nfl/rss.xml",
-                "https://www.espn.com/nba/rss.xml",
-            ]
-            
-            for feed_url in feeds:
-                try:
-                    response = self.session.get(feed_url, timeout=10)
-                    if response.status_code != 200:
-                        continue
-                    
-                    title_pattern = r'<title[^>]*>([^<]+)</title>'
-                    link_pattern = r'<link>([^<]+)</link>'
-                    
-                    titles = re.findall(title_pattern, response.text)
-                    links = re.findall(link_pattern, response.text)
-                    
-                    for i, title in enumerate(titles[1:6]):
-                        if i < len(links) and len(news) < 8:
-                            news.append({
-                                "title": title.strip(),
-                                "source": "ESPN",
-                                "url": links[i].strip(),
-                                "timestamp": datetime.now(timezone.utc).isoformat(),
-                                "category": "sports",
+                soup = BeautifulSoup(response.text, 'xml')
+                items = soup.find_all('item', limit=10)
+                for item in items:
+                    try:
+                        title = item.find('title').text if item.find('title') else ''
+                        link = item.find('link').text if item.find('link') else ''
+                        pubDate = item.find('pubDate').text if item.find('pubDate') else ''
+                        
+                        if title and self.deduplicate(title):
+                            self.articles.append({
+                                'title': title,
+                                'source': 'CoinTelegraph',
+                                'url': link,
+                                'time': pubDate,
+                                'category': 'crypto'
                             })
-                except:
-                    continue
-        
+                    except:
+                        pass
+                print(f"[News] CoinTelegraph: {len([a for a in self.articles if a['source'] == 'CoinTelegraph'])} articles")
         except Exception as e:
-            print(f"ESPN error: {e}")
-        
-        return news[:6]
+            print(f"[News] CoinTelegraph error: {e}")
     
-    def fetch_economist(self) -> List[Dict]:
-        """Fetch The Economist news (has RSS)"""
-        news = []
+    def fetch_theverge(self):
+        """Fetch from The Verge"""
         try:
-            print("[News] Fetching The Economist...")
             response = self.session.get(
-                "https://www.economist.com/finance-and-economics/rss.xml",
+                'https://www.theverge.com/rss/index.xml',
                 timeout=10
             )
-            
             if response.status_code == 200:
-                title_pattern = r'<title[^>]*>([^<]+)</title>'
-                link_pattern = r'<link>([^<]+)</link>'
-                
-                titles = re.findall(title_pattern, response.text)
-                links = re.findall(link_pattern, response.text)
-                
-                for i, title in enumerate(titles[1:5]):
-                    if i < len(links):
-                        news.append({
-                            "title": title.strip(),
-                            "source": "The Economist",
-                            "url": links[i].strip(),
-                            "timestamp": datetime.now(timezone.utc).isoformat(),
-                            "category": "macro",
-                        })
+                soup = BeautifulSoup(response.text, 'xml')
+                items = soup.find_all('item', limit=5)
+                for item in items:
+                    try:
+                        title = item.find('title').text if item.find('title') else ''
+                        link = item.find('link').text if item.find('link') else ''
+                        pubDate = item.find('pubDate').text if item.find('pubDate') else ''
+                        
+                        if title and self.deduplicate(title):
+                            self.articles.append({
+                                'title': title,
+                                'source': 'The Verge',
+                                'url': link,
+                                'time': pubDate,
+                                'category': 'tech'
+                            })
+                    except:
+                        pass
+                print(f"[News] The Verge: {len([a for a in self.articles if a['source'] == 'The Verge'])} articles")
         except Exception as e:
-            print(f"Economist error: {e}")
-        
-        return news[:3]
+            print(f"[News] The Verge error: {e}")
     
-    def aggregate(self) -> List[Dict]:
-        """Fetch from all sources and aggregate"""
-        all_news = []
-        
-        all_news.extend(self.fetch_cointelegraph_rss())
-        time.sleep(0.5)
-        all_news.extend(self.fetch_cnbc_rss())
-        time.sleep(0.5)
-        all_news.extend(self.fetch_espn_rss())
-        time.sleep(0.5)
-        all_news.extend(self.fetch_economist())
-        
-        # Remove duplicates by title
-        seen = set()
-        unique_news = []
-        for article in all_news:
-            title = article["title"].lower()
-            if title not in seen:
-                seen.add(title)
-                unique_news.append(article)
-        
-        # Sort by timestamp (newest first)
-        unique_news = sorted(
-            unique_news,
-            key=lambda x: x.get("timestamp", ""),
-            reverse=True
-        )
-        
-        print(f"✓ Aggregated {len(unique_news)} news articles")
-        return unique_news[:20]  # Return top 20
+    def fetch_techcrunch(self):
+        """Fetch from TechCrunch RSS"""
+        try:
+            response = self.session.get(
+                'https://techcrunch.com/feed/',
+                timeout=10
+            )
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, 'xml')
+                items = soup.find_all('item', limit=5)
+                for item in items:
+                    try:
+                        title = item.find('title').text if item.find('title') else ''
+                        link = item.find('link').text if item.find('link') else ''
+                        pubDate = item.find('pubDate').text if item.find('pubDate') else ''
+                        
+                        if title and self.deduplicate(title):
+                            self.articles.append({
+                                'title': title,
+                                'source': 'TechCrunch',
+                                'url': link,
+                                'time': pubDate,
+                                'category': 'tech'
+                            })
+                    except:
+                        pass
+                print(f"[News] TechCrunch: {len([a for a in self.articles if a['source'] == 'TechCrunch'])} articles")
+        except Exception as e:
+            print(f"[News] TechCrunch error: {e}")
     
-    def save_news(self, news: List[Dict]):
-        """Save news to file"""
-        output_file = DATA_DIR / "news.json"
+    def fetch_espn(self):
+        """Fetch from ESPN RSS"""
+        try:
+            response = self.session.get(
+                'https://feeds.espn.com/feeds/site/espntech.xml',
+                timeout=10
+            )
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, 'xml')
+                items = soup.find_all('item', limit=5)
+                for item in items:
+                    try:
+                        title = item.find('title').text if item.find('title') else ''
+                        link = item.find('link').text if item.find('link') else ''
+                        pubDate = item.find('pubDate').text if item.find('pubDate') else ''
+                        
+                        if title and self.deduplicate(title):
+                            self.articles.append({
+                                'title': title,
+                                'source': 'ESPN',
+                                'url': link,
+                                'time': pubDate,
+                                'category': 'sports'
+                            })
+                    except:
+                        pass
+                print(f"[News] ESPN: {len([a for a in self.articles if a['source'] == 'ESPN'])} articles")
+        except Exception as e:
+            print(f"[News] ESPN error: {e}")
+    
+    def fetch_cryptofees(self):
+        """Fetch from Crypto Fees Twitter/News"""
+        try:
+            # Try CryptoSlate as alternative
+            response = self.session.get(
+                'https://cryptoslate.com/feed/',
+                timeout=10
+            )
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, 'xml')
+                items = soup.find_all('item', limit=5)
+                for item in items:
+                    try:
+                        title = item.find('title').text if item.find('title') else ''
+                        link = item.find('link').text if item.find('link') else ''
+                        pubDate = item.find('pubDate').text if item.find('pubDate') else ''
+                        
+                        if title and self.deduplicate(title):
+                            self.articles.append({
+                                'title': title,
+                                'source': 'CryptoSlate',
+                                'url': link,
+                                'time': pubDate,
+                                'category': 'crypto'
+                            })
+                    except:
+                        pass
+                print(f"[News] CryptoSlate: {len([a for a in self.articles if a['source'] == 'CryptoSlate'])} articles")
+        except Exception as e:
+            print(f"[News] CryptoSlate error: {e}")
+    
+    def run(self):
+        """Fetch all news"""
+        print("[News] Fetching from multiple sources...")
+        self.fetch_cointelegraph()
+        time.sleep(1)
+        self.fetch_techcrunch()
+        time.sleep(1)
+        self.fetch_theverge()
+        time.sleep(1)
+        self.fetch_espn()
+        time.sleep(1)
+        self.fetch_cryptofees()
         
+        # Sort by most recent
+        self.articles = sorted(self.articles, key=lambda x: x.get('time', ''), reverse=True)[:30]
+        
+        return self.articles
+    
+    def save(self, path):
+        """Save to JSON"""
         data = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "articles": news,
-            "count": len(news),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
+            'articles': self.articles,
+            'count': len(self.articles)
         }
-        
-        with open(output_file, "w") as f:
+        with open(path, 'w') as f:
             json.dump(data, f, indent=2)
-        
-        print(f"✓ Saved {len(news)} news articles to {output_file}")
+        print(f"✓ Saved {len(self.articles)} news articles to {path}")
+
 
 if __name__ == "__main__":
-    aggregator = NewsAggregator()
-    news = aggregator.aggregate()
-    aggregator.save_news(news)
+    scraper = NewsScraperPolyberg()
+    scraper.run()
+    scraper.save('data/news.json')
