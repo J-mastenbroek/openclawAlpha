@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polymarket Terminal - Bloomberg Professional</title>
+    <title>Polyberg - Polymarket Terminal</title>
     <style>
         * {
             margin: 0;
@@ -31,10 +31,6 @@
             font-size: 16px;
             letter-spacing: 2px;
         }
-        
-        .bloomberg { color: #FFB81C; }
-        .divider { color: #999; margin: 0 8px; }
-        .polymarket { color: #000; }
         
         .status {
             display: flex;
@@ -105,43 +101,14 @@
             font-size: 13px;
         }
         
-        .sort-btn {
-            padding: 6px 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        
-        .sort-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-        
-        .sort-btn.active {
-            border-width: 2px;
-            opacity: 1;
-        }
-        
-        /* NEWS BOX */
         .news-item {
             padding: 12px 16px;
             border-bottom: 1px solid #f3f4f6;
             cursor: pointer;
-            transition: background 0.2s;
         }
         
         .news-item:hover {
             background: #f3f4f6;
-        }
-        
-        .news-item.active {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding-left: 12px;
         }
         
         .news-time {
@@ -163,7 +130,6 @@
             color: #6b7280;
         }
         
-        /* MARKETS BOX */
         .market-item {
             padding: 12px 16px;
             border-bottom: 1px solid #f3f4f6;
@@ -211,43 +177,10 @@
             font-size: 11px;
         }
         
-        .regime-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-left: 6px;
-        }
-        
-        .regime-trending {
-            background: #dcfce7;
-            color: #166534;
-        }
-        
-        .regime-range {
-            background: #dbeafe;
-            color: #0c4a6e;
-        }
-        
-        .regime-volatile {
-            background: #fed7aa;
-            color: #92400e;
-        }
-        
-        .regime-illiquid {
-            background: #f3e8ff;
-            color: #6b21a8;
-        }
-        
-        /* WHALES BOX */
         .whale-item {
             padding: 12px 16px;
             border-bottom: 1px solid #f3f4f6;
             cursor: pointer;
-            transition: background 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -296,13 +229,6 @@
         .positive { color: #059669; }
         .negative { color: #dc2626; }
         
-        .empty-state {
-            padding: 40px 16px;
-            text-align: center;
-            color: #9ca3af;
-            font-size: 12px;
-        }
-        
         .timestamp {
             font-size: 10px;
             color: #9ca3af;
@@ -321,12 +247,11 @@
             .container {
                 grid-template-columns: 1fr;
                 height: auto;
-                gap: 0;
             }
             
             .box {
-                border-radius: 0;
                 height: 400px;
+                border-radius: 0;
                 border: none;
                 border-bottom: 1px solid #e5e7eb;
             }
@@ -335,10 +260,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="branding">
-            <span style="color: #000; font-size: 16px; letter-spacing: 2px;">POLYBERG</span>
-            <span class="divider" style="display: none;"></span>
-        </div>
+        <div class="branding">POLYBERG</div>
         <div class="status">
             <div class="status-dot"></div>
             <span id="status-text">LIVE</span>
@@ -346,73 +268,59 @@
     </div>
     
     <div class="container">
-        <!-- NEWS BOX -->
         <div class="box">
-            <div class="box-header">📰 News Feed</div>
-            <div class="box-content" id="news-box">
-                <div class="empty-state">Loading news...</div>
-            </div>
+            <div class="box-header">📰 News</div>
+            <div class="box-content" id="news-box"></div>
             <div class="timestamp" id="news-timestamp"></div>
         </div>
         
-        <!-- MARKETS BOX -->
         <div class="box">
-            <div class="box-header">📊 All Markets</div>
+            <div class="box-header">📊 Markets</div>
             <div class="search-box">
-                <input type="text" id="market-search" placeholder="Search markets...">
-                <div style="display: flex; gap: 8px; padding: 8px 0; flex-wrap: wrap;">
-                    <button class="sort-btn" data-sort="volume" style="background: #fef3c7; color: #b45309;">📈 Volume</button>
-                    <button class="sort-btn" data-sort="spread" style="background: #dbeafe; color: #0369a1;">📊 Spread</button>
-                    <button class="sort-btn" data-sort="regime" style="background: #e0e7ff; color: #4f46e5;">🎯 Regime</button>
-                    <button class="sort-btn" data-sort="name" style="background: #f3e8ff; color: #6b21a8;">A-Z</button>
-                </div>
+                <input type="text" id="market-search" placeholder="Search...">
             </div>
-            <div class="box-content" id="markets-box">
-                <div class="empty-state">Loading markets...</div>
-            </div>
+            <div class="box-content" id="markets-box"></div>
             <div class="timestamp" id="markets-timestamp"></div>
         </div>
         
-        <!-- WHALES BOX -->
         <div class="box">
-            <div class="box-header">🐋 Top Wallets (30d)</div>
-            <div class="box-content" id="whales-box">
-                <div class="empty-state">Loading whale data...</div>
-            </div>
+            <div class="box-header">🐋 Top Wallets</div>
+            <div class="box-content" id="whales-box"></div>
             <div class="timestamp" id="whales-timestamp"></div>
         </div>
     </div>
     
     <script>
-        let liveData = null;
-        let filteredMarkets = [];
-        let currentSort = 'volume'; // default sort
+        // Default/cached data - loads instantly
+        const defaultData = {
+            timestamp: new Date().toISOString(),
+            markets: [],
+            whales: []
+        };
         
-        async function loadLiveData() {
-            try {
-                const response = await fetch('data/live_data.json');
-                liveData = await response.json();
-                render();
-                document.getElementById('status-text').textContent = 'LIVE';
-            } catch (error) {
-                console.error('Load error:', error);
-                document.getElementById('status-text').textContent = 'LOADING...';
-                setTimeout(loadLiveData, 5000);
-            }
-        }
+        let liveData = defaultData;
+        let filteredMarkets = [];
+        
+        // Sample news (static)
+        const newsItems = [
+            { title: "Bitcoin breaks $95k", time: "2h ago", source: "CoinTelegraph" },
+            { title: "Ethereum upgrade live", time: "4h ago", source: "The Block" },
+            { title: "Inflation data released", time: "6h ago", source: "Economic Calendar" },
+            { title: "ETF approval announced", time: "8h ago", source: "Reuters" },
+            { title: "Polymarket volume surge", time: "10h ago", source: "DeFi Pulse" },
+        ];
         
         function formatTime(isoString) {
             const date = new Date(isoString);
             const now = new Date();
             const seconds = Math.floor((now - date) / 1000);
             if (seconds < 60) return 'now';
-            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
-            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
-            return Math.floor(seconds / 86400) + 'd ago';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+            return Math.floor(seconds / 86400) + 'd';
         }
         
         function render() {
-            if (!liveData) return;
             renderNews();
             renderMarkets();
             renderWhales();
@@ -420,161 +328,64 @@
         
         function renderNews() {
             const container = document.getElementById('news-box');
-            const timestamp = document.getElementById('news-timestamp');
-            
-            // Dummy news for now (would pull from real sources)
-            const news = [
-                { title: "Bitcoin breaks $95k on Fed hawkish pivot", time: "5m ago", source: "CoinTelegraph" },
-                { title: "Ethereum Shanghai upgrade live, gas fees drop 40%", time: "2h ago", source: "The Block" },
-                { title: "US inflation data misses expectations", time: "4h ago", source: "Economic Calendar" },
-                { title: "Major ETF approval signals institutional adoption", time: "6h ago", source: "Reuters" },
-                { title: "Polymarket $50M volume on election contract", time: "8h ago", source: "DeFi Pulse" },
-            ];
-            
-            container.innerHTML = news.map(n => `
+            container.innerHTML = newsItems.map(n => `
                 <div class="news-item">
                     <div class="news-time">${n.time}</div>
                     <div class="news-title">${n.title}</div>
                     <div class="news-source">${n.source}</div>
                 </div>
             `).join('');
-            
-            if (liveData.timestamp) {
-                timestamp.textContent = `Updated ${formatTime(liveData.timestamp)}`;
-            }
-        }
-        
-        function sortMarkets(markets, sortBy) {
-            const copy = [...markets];
-            const regimeOrder = { 'TRENDING': 0, 'RANGE': 1, 'VOLATILE': 2, 'ILLIQUID': 3 };
-            
-            switch(sortBy) {
-                case 'volume':
-                    return copy.sort((a, b) => (b.volume_24h || 0) - (a.volume_24h || 0));
-                case 'spread':
-                    return copy.sort((a, b) => (a.spread || 9999) - (b.spread || 9999));
-                case 'regime':
-                    return copy.sort((a, b) => {
-                        const aRegime = detectMarketRegime(a).regime;
-                        const bRegime = detectMarketRegime(b).regime;
-                        return (regimeOrder[aRegime] || 99) - (regimeOrder[bRegime] || 99);
-                    });
-                case 'name':
-                    return copy.sort((a, b) => a.name.localeCompare(b.name));
-                default:
-                    return copy;
-            }
         }
         
         function renderMarkets() {
             const container = document.getElementById('markets-box');
-            const timestamp = document.getElementById('markets-timestamp');
             const markets = liveData.markets || [];
             
             if (markets.length === 0) {
-                container.innerHTML = '<div class="empty-state">No market data</div>';
+                container.innerHTML = '<div style="padding: 16px; color: #999; font-size: 12px;">Loading markets...</div>';
                 return;
             }
             
             filteredMarkets = markets;
             displayMarkets(markets);
             
-            if (liveData.timestamp) {
-                timestamp.textContent = `${markets.length} markets • Sorted by ${currentSort} • Updated ${formatTime(liveData.timestamp)}`;
-            }
-        }
-        
-        function detectMarketRegime(market) {
-            // Market regime classification based on spread, liquidity, and volume
-            const spread = market.spread || 0;
-            const liquidity = market.liquidity || 0;
-            const volume24h = market.volume_24h || 0;
-            
-            // ILLIQUID: No volume in 24h or spread > 50%
-            if (volume24h === 0 || spread > 50) {
-                return { regime: 'ILLIQUID', class: 'regime-illiquid', icon: '⚠️' };
-            }
-            
-            // VOLATILE: High spread (20-50%) with volume
-            if (spread > 20) {
-                return { regime: 'VOLATILE', class: 'regime-volatile', icon: '⚡' };
-            }
-            
-            // RANGE-BOUND: Tight spread (5-20%) with steady liquidity
-            if (spread >= 5 && spread <= 20 && liquidity > 100) {
-                return { regime: 'RANGE', class: 'regime-range', icon: '📊' };
-            }
-            
-            // TRENDING: Very tight spread (<5%) with strong volume
-            if (spread < 5 && volume24h > 100) {
-                return { regime: 'TRENDING', class: 'regime-trending', icon: '📈' };
-            }
-            
-            // Default to range-bound
-            return { regime: 'RANGE', class: 'regime-range', icon: '📊' };
+            const timestamp = document.getElementById('markets-timestamp');
+            timestamp.textContent = `${markets.length} markets • ${formatTime(liveData.timestamp)}`;
         }
         
         function displayMarkets(markets) {
             const container = document.getElementById('markets-box');
-            const sorted = sortMarkets(markets, currentSort);
-            container.innerHTML = sorted.map(m => {
-                const regimeInfo = detectMarketRegime(m);
-                return `
+            container.innerHTML = markets.map(m => `
                 <div class="market-item">
-                    <div class="market-name" title="${m.name}">
-                        ${m.name}
-                        <span class="regime-badge ${regimeInfo.class}" title="Market Regime">${regimeInfo.icon} ${regimeInfo.regime}</span>
-                    </div>
+                    <div class="market-name" title="${m.name}">${m.name}</div>
                     <div class="market-price">
                         <span class="price-bid">${m.bid ? m.bid.toFixed(2) : '—'}</span>
                         <span class="price-ask">${m.ask ? m.ask.toFixed(2) : '—'}</span>
-                        <span class="price-vol">${m.volume_24h ? ($${(m.volume_24h / 1000).toFixed(0)}k) : ''}</span>
+                        <span class="price-vol">${m.volume_24h ? '$' + (m.volume_24h / 1000).toFixed(0) + 'k' : ''}</span>
                     </div>
                 </div>
-            `;
-            }).join('');
+            `).join('');
         }
-        
-        // Sort button handlers
-        document.querySelectorAll('.sort-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                currentSort = e.target.dataset.sort;
-                displayMarkets(filteredMarkets);
-                // Update timestamp
-                const timestamp = document.getElementById('markets-timestamp');
-                if (liveData.timestamp) {
-                    timestamp.textContent = `${filteredMarkets.length} markets • Sorted by ${currentSort} • Updated ${formatTime(liveData.timestamp)}`;
-                }
-            });
-        });
-        
-        // Make first sort button active by default
-        document.querySelector('[data-sort="volume"]').classList.add('active');
         
         document.getElementById('market-search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const filtered = filteredMarkets.filter(m => 
-                m.name.toLowerCase().includes(query)
-            );
+            const filtered = filteredMarkets.filter(m => m.name.toLowerCase().includes(query));
             displayMarkets(filtered);
         });
         
         function renderWhales() {
             const container = document.getElementById('whales-box');
-            const timestamp = document.getElementById('whales-timestamp');
             const whales = liveData.whales || [];
             
             if (whales.length === 0) {
-                container.innerHTML = '<div class="empty-state">No whale data</div>';
+                container.innerHTML = '<div style="padding: 16px; color: #999; font-size: 12px;">Loading wallets...</div>';
                 return;
             }
             
             container.innerHTML = whales.map(w => `
                 <div class="whale-item">
                     <a class="whale-wallet" href="https://polymarket.com/profile/${w.address}" target="_blank">
-                        ${w.address ? w.address.slice(0, 6) + '...' + w.address.slice(-4) : '—'}
+                        ${w.address ? w.address.slice(0, 6) + '...' : '—'}
                     </a>
                     <div class="whale-stats">
                         <div class="whale-stat">
@@ -586,7 +397,7 @@
                             <div class="whale-stat-value">${w.win_rate ? (w.win_rate * 100).toFixed(0) : 0}%</div>
                         </div>
                         <div class="whale-stat">
-                            <div class="whale-stat-label">PNL 30d</div>
+                            <div class="whale-stat-label">PNL</div>
                             <div class="whale-stat-value ${w.pnl_30d >= 0 ? 'positive' : 'negative'}">
                                 $${Math.abs(w.pnl_30d / 1000).toFixed(0)}k
                             </div>
@@ -595,14 +406,27 @@
                 </div>
             `).join('');
             
-            if (liveData.timestamp) {
-                timestamp.textContent = `${whales.length} top performers • Updated ${formatTime(liveData.timestamp)}`;
+            const timestamp = document.getElementById('whales-timestamp');
+            timestamp.textContent = `${whales.length} wallets • ${formatTime(liveData.timestamp)}`;
+        }
+        
+        async function loadLiveData() {
+            try {
+                const response = await fetch('data/live_data.json?t=' + Date.now());
+                if (response.ok) {
+                    liveData = await response.json();
+                    render();
+                }
+            } catch (error) {
+                console.error('Data load error:', error);
             }
         }
         
-        // Load and auto-refresh
-        loadLiveData();
-        setInterval(loadLiveData, 10000); // Refresh every 10s
+        // Load instantly with defaults
+        render();
+        
+        // Update in background (no blocking)
+        setInterval(loadLiveData, 5000);
     </script>
 </body>
 </html>
