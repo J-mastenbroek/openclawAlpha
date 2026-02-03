@@ -1,20 +1,111 @@
 {
-  "timestamp": "2026-02-03T16:50:47.699641+00:00",
+  "timestamp": "2026-02-03T16:52:22.230182+00:00",
   "articles": [
     {
       "title": "Bitcoin, crypto 'winter' soon over, says BitWise exec as gold retargets $5K",
       "source": "CoinTelegraph",
-      "url": "https://cointelegraph.com",
-      "timestamp": "2026-02-03T16:50:45.271579+00:00",
+      "url": "https://cointelegraph.com/news/bitcoin-crypto-winter-soon-over-bitwise-exec-gold-retargets-5k?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 16:36:29 +0000",
       "category": "crypto"
     },
     {
-      "title": "Cointelegraph.com News",
+      "title": "What tech CEOs and executives have said about ICE\u2019s actions in Minnesota",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/02/03/what-tech-ceos-and-executives-have-said-about-ice-in-minnesota/",
+      "time": "Tue, 03 Feb 2026 16:13:30 +0000",
+      "category": "tech"
+    },
+    {
+      "title": "World Liberty launches $3.4B stablecoin: How it fits into onchain credit systems",
       "source": "CoinTelegraph",
-      "url": "https://cointelegraph.com",
-      "timestamp": "2026-02-03T16:50:45.271563+00:00",
+      "url": "https://cointelegraph.com/news/world-liberty-launches-3-4b-stablecoin-how-it-fits-into-onchain-credit-systems?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 16:01:04 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "TikTok recovers from dip in usage that benefited rival apps following U.S. ownership change",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/02/03/tiktok-recovers-from-dip-in-usage-that-benefited-rival-apps-following-u-s-ownership-change/",
+      "time": "Tue, 03 Feb 2026 15:57:06 +0000",
+      "category": "tech"
+    },
+    {
+      "title": "Fitbit founders launch AI platform to help families monitor their health",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/02/03/fitbit-founders-launch-ai-platform-to-help-families-monitor-their-health/",
+      "time": "Tue, 03 Feb 2026 15:53:36 +0000",
+      "category": "tech"
+    },
+    {
+      "title": "Did Solana bottom at $100? SOL price charts hint at a 150% rally",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/did-solana-price-bottom-100-dollars-sol-price-charts-hint-rally?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 15:18:41 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "MetaMask adds tokenized US stocks, ETFs, commodities via Ondo",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/metamask-tokenized-stocks-etfs-commodities-ondo?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 15:00:00 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "Rails taps Stellar to launch onchain vaults for institutional derivatives liquidity",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/rails-taps-stellar-to-launch-onchain-vaults?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 15:00:00 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "Fireblocks integrates Canton Network for regulated onchain settlement",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/fireblocks-canton-network-support-expanding-regulated-tokenization-settlement-rails?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 14:30:00 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "PayPal hires HP\u2019s Enrique Lores as its new CEO",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/02/03/paypal-hires-hps-enrique-lores-as-its-new-ceo/",
+      "time": "Tue, 03 Feb 2026 14:15:28 +0000",
+      "category": "tech"
+    },
+    {
+      "title": "Peak XV says internal disagreement led to partner exits as it doubles down on AI",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/02/03/peak-xv-says-internal-disagreement-led-to-partner-exits-as-it-doubles-down-on-ai/",
+      "time": "Tue, 03 Feb 2026 14:14:33 +0000",
+      "category": "tech"
+    },
+    {
+      "title": "Suspicious projects outpublish legitimate ones in crypto press releases",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/suspicious-projects-outpublish-legitimate-crypto-press?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 14:00:00 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "Spanish Red Cross launches privacy-first blockchain aid platform",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/spanish-red-cross-launches-redchain-privacy-blockchain?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 14:00:00 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "Real-world assets don\u2019t need new gatekeepers",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/rwas-gatekeepers?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 12:30:00 +0000",
+      "category": "crypto"
+    },
+    {
+      "title": "Bitcoin borrowing shifts from short-term liquidity to long-term planning: Xapo",
+      "source": "CoinTelegraph",
+      "url": "https://cointelegraph.com/news/xapo-bitcoin-backed-loans-long-term-planning-2025?utm_source=rss_feed&utm_medium=feed&utm_campaign=rss_partner_inbound",
+      "time": "Tue, 03 Feb 2026 12:09:41 +0000",
       "category": "crypto"
     }
   ],
-  "count": 2
+  "count": 15
 }
