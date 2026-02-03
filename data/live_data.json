@@ -1,20 +1,367 @@
 {
-  "timestamp": "2026-02-03T13:57:00Z",
+  "timestamp": "2026-02-03T12:59:41.240740+00:00",
   "markets": [
-    {"id": "0xabc1", "name": "Will BTC break $100k by Q2 2025?", "bid": 0.68, "ask": 0.70, "spread": 2.9, "volume_24h": 285000, "volume_7d": 1250000, "liquidity": 450},
-    {"id": "0xabc2", "name": "Will ETH exceed $5k by EOY 2025?", "bid": 0.42, "ask": 0.44, "spread": 4.6, "volume_24h": 156000, "volume_7d": 780000, "liquidity": 320},
-    {"id": "0xabc3", "name": "US inflation below 2.5% by Dec?", "bid": 0.38, "ask": 0.41, "spread": 7.3, "volume_24h": 98000, "volume_7d": 420000, "liquidity": 210},
-    {"id": "0xabc4", "name": "Fed will cut rates 3+ times?", "bid": 0.62, "ask": 0.65, "spread": 4.7, "volume_24h": 125000, "volume_7d": 650000, "liquidity": 380},
-    {"id": "0xabc5", "name": "AI AGI before end of 2026?", "bid": 0.24, "ask": 0.27, "spread": 11.1, "volume_24h": 78000, "volume_7d": 245000, "liquidity": 95}
+    {
+      "id": "1319567",
+      "name": "XRP Up or Down - February 3, 9:45AM-10:00AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 6677.4216
+    },
+    {
+      "id": "1319570",
+      "name": "Solana Up or Down - February 3, 9:45AM-10:00AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 6940.4502
+    },
+    {
+      "id": "1319569",
+      "name": "Bitcoin Up or Down - February 3, 9:45AM-10:00AM ET",
+      "bid": 0.5,
+      "ask": 0.51,
+      "spread": 1.980198019801982,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 20313.1044
+    },
+    {
+      "id": "1319568",
+      "name": "Ethereum Up or Down - February 3, 9:45AM-10:00AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 13372.0983
+    },
+    {
+      "id": "1319566",
+      "name": "Bitcoin Up or Down - February 3, 9:30AM-9:45AM ET",
+      "bid": 0.5,
+      "ask": 0.51,
+      "spread": 1.980198019801982,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 21348.2044
+    },
+    {
+      "id": "1319565",
+      "name": "Solana Up or Down - February 3, 9:30AM-9:45AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 7662.9641
+    },
+    {
+      "id": "1319564",
+      "name": "Ethereum Up or Down - February 3, 9:30AM-9:45AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 13603.1135
+    },
+    {
+      "id": "1319563",
+      "name": "XRP Up or Down - February 3, 9:30AM-9:45AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 7409.5113
+    },
+    {
+      "id": "1319532",
+      "name": "Ethereum Up or Down - February 3, 9:15AM-9:30AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 13059.1709
+    },
+    {
+      "id": "1319531",
+      "name": "XRP Up or Down - February 3, 9:15AM-9:30AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 7414.8488
+    },
+    {
+      "id": "1319530",
+      "name": "Solana Up or Down - February 3, 9:15AM-9:30AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 7441.2622
+    },
+    {
+      "id": "1319529",
+      "name": "Bitcoin Up or Down - February 3, 9:15AM-9:30AM ET",
+      "bid": 0.5,
+      "ask": 0.51,
+      "spread": 1.980198019801982,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 20460.778
+    },
+    {
+      "id": "1319407",
+      "name": "Ethereum Up or Down - February 3, 9:00AM-9:15AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 13139.3284
+    },
+    {
+      "id": "1319406",
+      "name": "Bitcoin Up or Down - February 3, 9:00AM-9:15AM ET",
+      "bid": 0.5,
+      "ask": 0.51,
+      "spread": 1.980198019801982,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 20717.8053
+    },
+    {
+      "id": "1319405",
+      "name": "Solana Up or Down - February 3, 9:00AM-9:15AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 7171.3889
+    },
+    {
+      "id": "1319404",
+      "name": "XRP Up or Down - February 3, 9:00AM-9:15AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 6763.9648
+    },
+    {
+      "id": "1319399",
+      "name": "Solana Up or Down - February 3, 8:45AM-9:00AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 6895.9809
+    },
+    {
+      "id": "1319398",
+      "name": "XRP Up or Down - February 3, 8:45AM-9:00AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 7099.8815
+    },
+    {
+      "id": "1319397",
+      "name": "Ethereum Up or Down - February 3, 8:45AM-9:00AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 12659.963
+    },
+    {
+      "id": "1319396",
+      "name": "Bitcoin Up or Down - February 3, 8:45AM-9:00AM ET",
+      "bid": 0.5,
+      "ask": 0.51,
+      "spread": 1.980198019801982,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 20901.9579
+    },
+    {
+      "id": "1319392",
+      "name": "XRP Up or Down - February 3, 8:30AM-8:45AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 6486.0219
+    },
+    {
+      "id": "1319393",
+      "name": "Solana Up or Down - February 3, 8:30AM-8:45AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 7254.3449
+    },
+    {
+      "id": "1319391",
+      "name": "Ethereum Up or Down - February 3, 8:30AM-8:45AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 13122.6755
+    },
+    {
+      "id": "1319390",
+      "name": "Bitcoin Up or Down - February 3, 8:30AM-8:45AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 24036.2708
+    },
+    {
+      "id": "1319331",
+      "name": "Bitcoin Up or Down - February 3, 8:15AM-8:30AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 22632.9859
+    },
+    {
+      "id": "1319330",
+      "name": "Solana Up or Down - February 3, 8:15AM-8:30AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 5569.7288
+    },
+    {
+      "id": "1319332",
+      "name": "XRP Up or Down - February 3, 8:15AM-8:30AM ET",
+      "bid": 0.49,
+      "ask": 0.51,
+      "spread": 4.0000000000000036,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 5788.9046
+    },
+    {
+      "id": "1319329",
+      "name": "Ethereum Up or Down - February 3, 8:15AM-8:30AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 11386.2813
+    },
+    {
+      "id": "1319136",
+      "name": "XRP Up or Down - February 3, 8:00AM-8:15AM ET",
+      "bid": 0.46,
+      "ask": 0.47,
+      "spread": 2.1505376344085922,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 8644.2502
+    },
+    {
+      "id": "1319134",
+      "name": "Solana Up or Down - February 3, 8:00AM-8:15AM ET",
+      "bid": 0.49,
+      "ask": 0.5,
+      "spread": 2.020202020202022,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 9968.1283
+    },
+    {
+      "id": "1319131",
+      "name": "Ethereum Up or Down - February 3, 8:00AM-8:15AM ET",
+      "bid": 0.46,
+      "ask": 0.47,
+      "spread": 2.1505376344085922,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 17213.3085
+    },
+    {
+      "id": "1319129",
+      "name": "Bitcoin Up or Down - February 3, 8:00AM-8:15AM ET",
+      "bid": 0.47,
+      "ask": 0.48,
+      "spread": 2.105263157894739,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 34011.7011
+    },
+    {
+      "id": "1319034",
+      "name": "Bitcoin Up or Down - February 3, 7:45AM-8:00AM ET",
+      "bid": 0.95,
+      "ask": 0.96,
+      "spread": 1.0471204188481684,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 18635.2949
+    },
+    {
+      "id": "1319033",
+      "name": "XRP Up or Down - February 3, 7:45AM-8:00AM ET",
+      "bid": 0.96,
+      "ask": 0.98,
+      "spread": 2.061855670103095,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 2773.3201
+    },
+    {
+      "id": "1319035",
+      "name": "Ethereum Up or Down - February 3, 7:45AM-8:00AM ET",
+      "bid": 0.99,
+      "ask": 1.0,
+      "spread": 1.0050251256281415,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 10200.7374
+    },
+    {
+      "id": "1319032",
+      "name": "Solana Up or Down - February 3, 7:45AM-8:00AM ET",
+      "bid": 0.92,
+      "ask": 0.93,
+      "spread": 1.081081081081082,
+      "volume_24h": 0.0,
+      "volume_7d": 0.0,
+      "liquidity": 6183.5103
+    }
   ],
-  "whales": [
-    {"address": "0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78", "trades": 487, "win_rate": 0.72, "pnl_30d": 285000, "pnl_7d": 45000},
-    {"address": "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4", "trades": 234, "win_rate": 0.68, "pnl_30d": 142000, "pnl_7d": 22000},
-    {"address": "0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f", "trades": 612, "win_rate": 0.65, "pnl_30d": 198000, "pnl_7d": 31000}
-  ],
-  "news": [
-    {"title": "Bitcoin surges past $95k on Fed signals", "source": "CoinTelegraph", "url": "https://cointelegraph.com", "time": "2026-02-03T13:15:00Z"},
-    {"title": "Ethereum upgrade improves throughput 40%", "source": "The Block", "url": "https://theblock.co", "time": "2026-02-03T11:30:00Z"},
-    {"title": "US inflation data misses expectations", "source": "Reuters", "url": "https://reuters.com", "time": "2026-02-03T10:45:00Z"}
-  ]
+  "whales": [],
+  "news": []
 }

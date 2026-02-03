@@ -1,115 +1,98 @@
 #!/usr/bin/env python3
 """
-Polyberg: Real Polymarket data via Gamma API.
-Fetches LIVE markets only (filtering out dead/resolved ones).
-Uses proper filtering to get current trading markets.
+Polyberg: Real-time Polymarket terminal data fetcher.
+Integrates Hans's production Polymarket capturer with Polyberg terminal.
 """
 
+import asyncio
 import json
-import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
+from polymarket_capturer import GammaClient, PriceCache, OrderBook, rtds_prices_listener, utc_now
+import requests
 
-class PolybergTerminal:
+class PolybergLiveFeeder:
     def __init__(self):
         self.repo_root = Path(__file__).parent.parent
         self.data_file = self.repo_root / "data" / "live_data.json"
-        self.data_file.parent.mkdir(exist_ok=True)
+        self.gamma = GammaClient()
+        self.price_cache = PriceCache()
         
-    def fetch_live_markets(self):
-        """Fetch LIVE markets from Gamma API"""
-        markets = []
-        
+    def get_live_markets(self) -> list:
+        """Fetch current 15-minute markets from Gamma API"""
         try:
-            print("Fetching live markets from Gamma API...")
+            events = self.gamma.scan_15m_events()
             
-            # Get markets - correct approach with pagination
-            response = requests.get(
-                "https://gamma-api.polymarket.com/markets",
-                params={
-                    "limit": 100,
-                    "offset": 0,
-                },
-                timeout=15
-            )
-            
-            if response.status_code == 200:
-                all_markets = response.json()
-                print(f"Got {len(all_markets)} markets from API")
-                
-                # Filter for LIVE markets only
-                # Live = has real prices + volume/liquidity
-                for m in all_markets:
-                    try:
-                        bid = float(m.get("bestBid", 0))
-                        ask = float(m.get("bestAsk", 1))
-                        volume = float(m.get("volume24h", 0))
-                        
-                        # Skip:
-                        # - Markets with fake prices (0 bid, 1 ask = dead)
-                        # - Markets with no liquidity
-                        if bid == 0 and ask == 1:
-                            continue
-                        if bid >= ask:  # Invalid spread
-                            continue
-                        if volume == 0 and float(m.get("liquidity", 0)) < 20:
-                            continue
-                        
-                        # This is a live market
-                        markets.append({
-                            "id": m.get("id", ""),
-                            "name": m.get("question", ""),
-                            "bid": bid,
-                            "ask": ask,
-                            "spread": ((ask - bid) / ((bid + ask) / 2) * 100) if (bid + ask) > 0 else 0,
-                            "volume_24h": volume,
-                            "volume_7d": float(m.get("volume7d", 0)),
-                            "liquidity": float(m.get("liquidity", 0)),
-                        })
-                    except (ValueError, TypeError, KeyError):
+            markets = []
+            for e in events:
+                try:
+                    slug = e.get("slug")
+                    asset = self.gamma.extract_asset(e)
+                    market_list = e.get("markets", [])
+                    
+                    if not market_list:
                         continue
-                
-                print(f"✓ Found {len(markets)} LIVE markets (filtered)")
-                return sorted(markets, key=lambda x: x.get("volume_24h", 0), reverse=True)[:100]
+                    
+                    m = market_list[0]
+                    bid = float(m.get("bestBid", 0))
+                    ask = float(m.get("bestAsk", 1))
+                    
+                    # Skip dead markets
+                    if bid == 0 and ask == 1:
+                        continue
+                    if bid >= ask:
+                        continue
+                    
+                    markets.append({
+                        "id": m.get("id", ""),
+                        "name": e.get("title") or e.get("slug", "Unknown"),
+                        "bid": bid,
+                        "ask": ask,
+                        "spread": ((ask - bid) / ((bid + ask) / 2) * 100) if (bid + ask) > 0 else 0,
+                        "volume_24h": float(m.get("volume24h", 0)),
+                        "volume_7d": float(m.get("volume7d", 0)),
+                        "liquidity": float(m.get("liquidity", 0)),
+                    })
+                except (ValueError, TypeError, KeyError):
+                    continue
+            
+            # Sort by volume
+            markets = sorted(markets, key=lambda x: x.get("volume_24h", 0), reverse=True)[:50]
+            print(f"✓ Live markets: {len(markets)}")
+            return markets
         
         except Exception as e:
-            print(f"API error: {e}")
-        
-        return []
+            print(f"Market fetch error: {e}")
+            return []
     
-    def fetch_whale_wallets(self):
-        """Fetch top wallets"""
+    def get_whale_wallets(self) -> list:
+        """Fetch top wallets from Gamma API"""
         whales = []
         try:
-            response = requests.get(
-                "https://gamma-api.polymarket.com/users",
-                params={"limit": 50},
-                timeout=15
-            )
+            users = self.gamma.get("users", {"limit": 50})
             
-            if response.status_code == 200:
-                users = response.json()
-                
-                for user in users[:25]:
-                    try:
-                        address = user.get("address")
-                        if address:
-                            whales.append({
-                                "address": address,
-                                "trades": int(user.get("trade_count", 0)),
-                                "win_rate": float(user.get("win_rate", 0)) / 100,
-                                "pnl_30d": float(user.get("profit_30d", 0)),
-                                "pnl_7d": float(user.get("profit_7d", 0)),
-                            })
-                    except:
-                        continue
+            for user in users[:25]:
+                try:
+                    address = user.get("address")
+                    if address:
+                        whales.append({
+                            "address": address,
+                            "trades": int(user.get("trade_count", 0)),
+                            "win_rate": float(user.get("win_rate", 0)) / 100,
+                            "pnl_30d": float(user.get("profit_30d", 0)),
+                            "pnl_7d": float(user.get("profit_7d", 0)),
+                        })
+                except:
+                    continue
+            
+            print(f"✓ Whale wallets: {len(whales)}")
         except Exception as e:
             print(f"Whale fetch error: {e}")
         
         return whales
     
-    def fetch_news(self):
-        """Fetch crypto news"""
+    def get_news(self) -> list:
+        """Fetch crypto news from CoinGecko"""
         news = []
         try:
             response = requests.get(
@@ -125,19 +108,21 @@ class PolybergTerminal:
                             "title": item.get("title", ""),
                             "source": item.get("sources", [{}])[0].get("title", "News"),
                             "url": item.get("url", ""),
-                            "time": item.get("published_at", datetime.utcnow().isoformat()),
+                            "time": item.get("published_at", datetime.now(timezone.utc).isoformat()),
                         })
                     except:
                         continue
+            
+            print(f"✓ News items: {len(news)}")
         except Exception as e:
             print(f"News error: {e}")
         
         return news
     
-    def save_data(self, markets, whales, news):
-        """Save to live data file"""
+    def save_data(self, markets: list, whales: list, news: list):
+        """Save all data to live_data.json"""
         data = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": utc_now().isoformat(),
             "markets": markets,
             "whales": whales,
             "news": news,
@@ -146,18 +131,18 @@ class PolybergTerminal:
         with open(self.data_file, "w") as f:
             json.dump(data, f, indent=2)
         
-        print(f"✓ Saved: {len(markets)} live markets | {len(whales)} whales | {len(news)} news")
+        print(f"✓ Saved: {len(markets)} markets | {len(whales)} whales | {len(news)} news")
     
     def update(self):
-        """Full update"""
-        print(f"[{datetime.utcnow().strftime('%H:%M:%S')}] Updating Polyberg...")
+        """Full update cycle"""
+        print(f"[{utc_now().strftime('%H:%M:%S')}] Fetching live Polymarket data...")
         
-        markets = self.fetch_live_markets()
-        whales = self.fetch_whale_wallets()
-        news = self.fetch_news()
+        markets = self.get_live_markets()
+        whales = self.get_whale_wallets()
+        news = self.get_news()
         
         self.save_data(markets, whales, news)
 
 if __name__ == "__main__":
-    terminal = PolybergTerminal()
-    terminal.update()
+    feeder = PolybergLiveFeeder()
+    feeder.update()
