@@ -609,7 +609,7 @@
                 try {
                     const whaleResponse = await fetch('./data/whales.json');
                     const whaleData = await whaleResponse.json();
-                    allData.whales = whaleData.whales || [];
+                    allData.whales = whaleData.top_whales || whaleData.whales || [];
                 } catch {
                     allData.whales = [];
                 }
@@ -786,10 +786,11 @@
 
             container.innerHTML = allData.whales.slice(0, 5).map(w => `
                 <div class="whale-card">
+                    <div style="font-weight: 600; margin-bottom: 8px;">${w.nickname || 'Unknown'}</div>
                     <div class="whale-address">${w.address.substring(0, 10)}...${w.address.substring(w.address.length - 8)}</div>
                     <div class="whale-metric">
-                        <span class="whale-label">Trades</span>
-                        <span class="whale-value">${w.trades || 0}</span>
+                        <span class="whale-label">Trades 30d</span>
+                        <span class="whale-value">${w.trades_30d || 0}</span>
                     </div>
                     <div class="whale-metric">
                         <span class="whale-label">Win Rate</span>
@@ -800,6 +801,10 @@
                         <span class="whale-value" style="color: ${(w.pnl_30d || 0) > 0 ? 'var(--accent-up)' : 'var(--accent-down)'}">
                             $${formatVolume(Math.abs(w.pnl_30d || 0))}
                         </span>
+                    </div>
+                    <div class="whale-metric">
+                        <span class="whale-label">Volume</span>
+                        <span class="whale-value">${formatVolume(w.volume_30d || 0)}</span>
                     </div>
                 </div>
             `).join('');
