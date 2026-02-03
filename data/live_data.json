@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-03T09:33:46.540319",
+  "timestamp": "2026-02-03T10:56:10.475802",
   "markets": [
     {
       "id": "40",
@@ -9,7 +9,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 68.283267
+      "liquidity": 68.283267,
+      "address": "0xf2e631ea675c5b09caea0bf65cf7887e25907af2657c8c907f02d9afbff20d05"
     },
     {
       "id": "44",
@@ -19,7 +20,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 190.134841
+      "liquidity": 190.134841,
+      "address": "0xb2eecb8d14e871c5b82a3b037fc5f8b703c218e41aa578c8e870244585b9db78"
     },
     {
       "id": "76",
@@ -29,7 +31,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 1170.706736
+      "liquidity": 1170.706736,
+      "address": "0xa670159e0a8868ed1ca0013cf026805c1c5ffbf778a1d5030218471620211222"
     },
     {
       "id": "77",
@@ -39,7 +42,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 8688.076983
+      "liquidity": 8688.076983,
+      "address": "0xa23e60a31b36c537605edf9eebb3e2be252046f1ffb19ade09f97d47429b5470"
     },
     {
       "id": "87",
@@ -49,17 +53,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 54.798207
-    },
-    {
-      "id": "93",
-      "name": "Will Donald Trump be inaugurated for his second term as President of the USA on Inauguration Day, January 20th, 2021?",
-      "bid": 0.0,
-      "ask": 1.0,
-      "spread": 200.0,
-      "volume_24h": 0.0,
-      "volume_7d": 0.0,
-      "liquidity": 43.468918
+      "liquidity": 54.798207,
+      "address": "0xf845fae0304d7c0e02f3928ead5f58936e087286f9eb220221689be292b51d18"
     },
     {
       "id": "109",
@@ -69,27 +64,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 99.338559
-    },
-    {
-      "id": "111",
-      "name": "Which party will win the U.S. Senate special election in Georgia? (Loeffler - R vs Warnock - D)",
-      "bid": 0.0,
-      "ask": 1.0,
-      "spread": 200.0,
-      "volume_24h": 0.0,
-      "volume_7d": 0.0,
-      "liquidity": 45.370082
-    },
-    {
-      "id": "115",
-      "name": "Superbowl 55: Kansas City Chiefs vs Tampa Bay Buccaneers",
-      "bid": 0.0,
-      "ask": 1.0,
-      "spread": 200.0,
-      "volume_24h": 0.0,
-      "volume_7d": 0.0,
-      "liquidity": 40.005841
+      "liquidity": 99.338559,
+      "address": "0xfd2cee9fee9a5d171aa909dd6a17dba52488dda7754f9791d29d14711583f34e"
     },
     {
       "id": "10196",
@@ -99,7 +75,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 61.074887
+      "liquidity": 61.074887,
+      "address": "0xca42b7a053230f908739ddd68a4b89d4f0c56fc104ecfa46e9d0d2c60ba0523e"
     },
     {
       "id": "11991",
@@ -109,7 +86,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 83.003653
+      "liquidity": 83.003653,
+      "address": "0x27d2c539ab4f349b603d4a47f071f581c06fd13f668d58ed35ae96eada116961"
     },
     {
       "id": "12016",
@@ -119,7 +97,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 2045.016719
+      "liquidity": 2045.016719,
+      "address": "0xf5b392f05bef47906dc0a753def7625069dfd1c2ece454fecf695c048fc118d1"
     },
     {
       "id": "12017",
@@ -129,17 +108,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 962.430075
-    },
-    {
-      "id": "13107",
-      "name": "Will Joe Biden be inaugurated as President of the USA on January 20th, 2021?",
-      "bid": 0.0,
-      "ask": 1.0,
-      "spread": 200.0,
-      "volume_24h": 0.0,
-      "volume_7d": 0.0,
-      "liquidity": 40.886614
+      "liquidity": 962.430075,
+      "address": "0x357e2d2afdedf5e7e46e2d1231bfe7a4f70f2893fe95c00e46b35d649d47f002"
     },
     {
       "id": "25367",
@@ -149,7 +119,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 238.094982
+      "liquidity": 238.094982,
+      "address": "0xe97a28fbd11bc755d4dff8a710d64b1a9ffd10324adbdcf391da64da60a96e2e"
     },
     {
       "id": "31023",
@@ -159,7 +130,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 1723.058544
+      "liquidity": 1723.058544,
+      "address": "0x74020daaabdfffc4b1f8648a678ff8610f65cbc2b5005956185920bdfc2711db"
     },
     {
       "id": "40935",
@@ -169,7 +141,8 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 9708.484873
+      "liquidity": 9708.484873,
+      "address": "0xbd3e2bb197d4dcce400db04bfe7e8b43ec8b1d906ca0a9e10e81f4ee0f680166"
     },
     {
       "id": "57333",
@@ -179,8 +152,51 @@
       "spread": 200.0,
       "volume_24h": 0.0,
       "volume_7d": 0.0,
-      "liquidity": 1871.70284
+      "liquidity": 1871.70284,
+      "address": "0xb555dac3f7803d1257c8e525b3d56c800dd8bbef84c4f4b3b9aa724f1a492ada"
     }
   ],
-  "whales": []
+  "whales": [
+    {
+      "address": "0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78",
+      "trades": 487,
+      "win_rate": 0.72,
+      "pnl_30d": 285000,
+      "pnl_7d": 45000
+    },
+    {
+      "address": "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4",
+      "trades": 234,
+      "win_rate": 0.68,
+      "pnl_30d": 142000,
+      "pnl_7d": 22000
+    },
+    {
+      "address": "0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f",
+      "trades": 612,
+      "win_rate": 0.65,
+      "pnl_30d": 198000,
+      "pnl_7d": 31000
+    }
+  ],
+  "news": [
+    {
+      "title": "Bitcoin breaks resistance on institutional buying",
+      "source": "CoinTelegraph",
+      "url": "#",
+      "time": "2026-02-03T10:56:10.474880"
+    },
+    {
+      "title": "Ethereum Layer 2 scaling sees record adoption",
+      "source": "The Block",
+      "url": "#",
+      "time": "2026-02-03T08:56:10.474905"
+    },
+    {
+      "title": "Polymarket prediction market volume surges",
+      "source": "DeFi Pulse",
+      "url": "#",
+      "time": "2026-02-03T06:56:10.474924"
+    }
+  ]
 }
