@@ -1,0 +1,112 @@
+{
+  "timestamp": "2026-02-03T15:52:55.048985+00:00",
+  "top_whales": [
+    {
+      "address": "0x1111111111111111111111111111111111111111",
+      "nickname": "Whale Alpha",
+      "trades_30d": 247,
+      "volume_30d": 5234000,
+      "pnl_30d": 45200,
+      "win_rate": 0.623,
+      "favorite_markets": [
+        "crypto",
+        "macro"
+      ],
+      "last_trade": "2026-02-03T13:52:55.048874+00:00"
+    },
+    {
+      "address": "0x2222222222222222222222222222222222222222",
+      "nickname": "Whale Beta",
+      "trades_30d": 189,
+      "volume_30d": 3821000,
+      "pnl_30d": 28150,
+      "win_rate": 0.571,
+      "favorite_markets": [
+        "sports",
+        "crypto"
+      ],
+      "last_trade": "2026-02-03T10:52:55.048899+00:00"
+    },
+    {
+      "address": "0x3333333333333333333333333333333333333333",
+      "nickname": "Whale Gamma",
+      "trades_30d": 156,
+      "volume_30d": 2945000,
+      "pnl_30d": 18900,
+      "win_rate": 0.603,
+      "favorite_markets": [
+        "politics",
+        "macro"
+      ],
+      "last_trade": "2026-02-03T03:52:55.048908+00:00"
+    },
+    {
+      "address": "0x4444444444444444444444444444444444444444",
+      "nickname": "Whale Delta",
+      "trades_30d": 201,
+      "volume_30d": 4102000,
+      "pnl_30d": 35400,
+      "win_rate": 0.612,
+      "favorite_markets": [
+        "crypto",
+        "tech"
+      ],
+      "last_trade": "2026-02-03T12:52:55.048915+00:00"
+    },
+    {
+      "address": "0x5555555555555555555555555555555555555555",
+      "nickname": "Whale Epsilon",
+      "trades_30d": 178,
+      "volume_30d": 3356000,
+      "pnl_30d": 22600,
+      "win_rate": 0.584,
+      "favorite_markets": [
+        "sports",
+        "politics"
+      ],
+      "last_trade": "2026-02-03T07:52:55.048922+00:00"
+    }
+  ],
+  "recent_activity": [
+    {
+      "whale": "Whale Alpha",
+      "action": "long",
+      "market": "Bitcoin Up or Down - Feb 3, 4:00PM-4:15PM ET",
+      "amount": 12400,
+      "timestamp": "2026-02-03T15:37:55.048949+00:00",
+      "odds": 0.52
+    },
+    {
+      "whale": "Whale Beta",
+      "action": "short",
+      "market": "S&P 500 Up or Down - Feb 3",
+      "amount": 8950,
+      "timestamp": "2026-02-03T15:18:55.048957+00:00",
+      "odds": 0.48
+    },
+    {
+      "whale": "Whale Gamma",
+      "action": "long",
+      "market": "US Election 2024 - Harris Win",
+      "amount": 6200,
+      "timestamp": "2026-02-03T15:00:55.048964+00:00",
+      "odds": 0.61
+    },
+    {
+      "whale": "Whale Delta",
+      "action": "long",
+      "market": "Ethereum Up or Down - Feb 3, 4:00PM-4:15PM ET",
+      "amount": 15600,
+      "timestamp": "2026-02-03T14:42:55.048971+00:00",
+      "odds": 0.51
+    },
+    {
+      "whale": "Whale Alpha",
+      "action": "short",
+      "market": "XRP Up or Down - Feb 3, 4:00PM-4:15PM ET",
+      "amount": 5300,
+      "timestamp": "2026-02-03T13:22:55.048978+00:00",
+      "odds": 0.45
+    }
+  ]
+}

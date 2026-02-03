@@ -3,286 +3,796 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PolyWhale - Polymarket Whale Tracker</title>
+    <title>Polyberg - Polymarket Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        body {
-            font-family: 'Monaco', 'Courier New', monospace;
-            background: #0a0e27;
-            color: #e0e6ff;
-            line-height: 1.6;
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
         }
-        
+
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
         }
-        
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            border-bottom: 2px solid #1e88e5;
-            margin-bottom: 40px;
+
+        /* Header */
+        .header {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        
-        h1 {
-            font-size: 2.5em;
-            color: #00d4ff;
-            margin-bottom: 10px;
-        }
-        
-        .tagline {
-            color: #888;
-            font-size: 1.1em;
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .card {
-            background: #141829;
-            border: 1px solid #1e3a5f;
-            border-radius: 8px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            border-color: #00d4ff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
-        }
-        
-        .card h3 {
-            color: #00d4ff;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        
-        .stat {
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #1e3a5f;
         }
-        
-        .stat:last-child {
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .stat {
+            text-align: right;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .refresh-btn {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #06b6d4;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(6, 182, 212, 0.2);
+            border-color: rgba(6, 182, 212, 0.5);
+        }
+
+        /* Main Grid */
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Panels */
+        .panel {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .panel-header {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #cbd5e1;
+        }
+
+        .panel-content {
+            padding: 16px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .tab {
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #06b6d4;
+            border-bottom-color: #06b6d4;
+        }
+
+        .tab:hover {
+            color: #cbd5e1;
+        }
+
+        /* Market Item */
+        .market-item {
+            padding: 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .market-item:last-child {
             border-bottom: none;
         }
-        
-        .stat-label {
-            color: #888;
-            font-size: 0.9em;
+
+        .market-item:hover {
+            background: rgba(6, 182, 212, 0.05);
+            padding-left: 16px;
         }
-        
-        .stat-value {
-            color: #00d4ff;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        
-        .markets-table {
-            width: 100%;
-            background: #141829;
-            border: 1px solid #1e3a5f;
-            border-radius: 8px;
+
+        .market-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #f1f5f9;
+            white-space: nowrap;
             overflow: hidden;
-            margin-bottom: 40px;
+            text-overflow: ellipsis;
         }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
+
+        .market-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 12px;
         }
-        
-        th {
-            background: #0a0e27;
-            color: #00d4ff;
-            padding: 15px;
-            text-align: left;
-            border-bottom: 2px solid #1e3a5f;
-            font-weight: bold;
-        }
-        
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #1e3a5f;
-        }
-        
-        tr:hover {
-            background: #1a1f3a;
-        }
-        
-        .anomaly {
-            background: #2a1f1f;
-            border-left: 3px solid #ff6b6b;
-            padding: 15px;
-            margin-bottom: 10px;
+
+        .market-price {
+            background: rgba(6, 182, 212, 0.1);
+            padding: 4px 8px;
             border-radius: 4px;
+            color: #06b6d4;
+            font-weight: 600;
         }
-        
-        .anomaly.warning {
-            border-left-color: #ffd93d;
-            background: #2a2819;
+
+        .market-spread {
+            color: #94a3b8;
         }
-        
-        .anomaly-type {
-            color: #ff6b6b;
-            font-weight: bold;
-            font-size: 0.9em;
-            margin-bottom: 5px;
+
+        .market-volume {
+            color: #64748b;
         }
-        
-        .anomaly.warning .anomaly-type {
-            color: #ffd93d;
+
+        /* Category Badge */
+        .category-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 6px;
         }
-        
-        .footer {
-            text-align: center;
+
+        .category-crypto { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .category-sports { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .category-politics { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .category-macro { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .category-other { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+
+        /* News Item */
+        .news-item {
+            padding: 12px;
+            border-left: 3px solid rgba(6, 182, 212, 0.3);
+            margin-bottom: 12px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .news-item:hover {
+            border-left-color: #06b6d4;
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .news-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .news-source {
+            background: rgba(6, 182, 212, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #06b6d4;
+            font-weight: 600;
+        }
+
+        /* Whale Item */
+        .whale-item {
+            padding: 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .whale-item:hover {
+            background: rgba(6, 182, 212, 0.05);
+            padding-left: 16px;
+        }
+
+        .whale-name {
+            font-weight: 600;
+            font-size: 12px;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .whale-address {
+            font-size: 11px;
+            color: #64748b;
+            font-family: 'Monaco', 'Courier New', monospace;
+            margin-bottom: 6px;
+        }
+
+        .whale-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        .whale-stat {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 6px;
+            border-radius: 3px;
+        }
+
+        .whale-stat-label {
+            color: #94a3b8;
+        }
+
+        .whale-stat-value {
+            color: #f1f5f9;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .chart-panel {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
             padding: 20px;
-            color: #666;
-            border-top: 1px solid #1e3a5f;
-            margin-top: 40px;
+            backdrop-filter: blur(10px);
         }
-        
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #cbd5e1;
+        }
+
+        /* Expiry Countdown */
+        .expiry-soon {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid rgba(239, 68, 68, 0.5);
+        }
+
+        .countdown {
+            color: #f87171;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* Loading */
         .loading {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 40px;
-            color: #888;
+            gap: 8px;
+            color: #94a3b8;
         }
-        
-        .update-time {
-            font-size: 0.8em;
-            color: #666;
-            margin-top: 20px;
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(6, 182, 212, 0.2);
+            border-top-color: #06b6d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(148, 163, 184, 0.1);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(6, 182, 212, 0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(6, 182, 212, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🐋 PolyWhale</h1>
-            <p class="tagline">Real-time Polymarket whale tracking & orderbook analysis</p>
-        </header>
-        
-        <div class="dashboard">
-            <div class="card">
-                <h3>🐋 Active Whales</h3>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">⚡ POLYBERG</div>
+            <div class="header-info">
                 <div class="stat">
-                    <span class="stat-label">Total Whales</span>
-                    <span class="stat-value" id="whale-count">--</span>
+                    <div class="stat-label">Markets</div>
+                    <div class="stat-value" id="market-count">-</div>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">Top Position</span>
-                    <span class="stat-value" id="top-position">--</span>
+                    <div class="stat-label">Categories</div>
+                    <div class="stat-value" id="category-count">-</div>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">Total Value</span>
-                    <span class="stat-value" id="whale-value">--</span>
+                    <div class="stat-label">Last Update</div>
+                    <div class="stat-value" id="last-update">-</div>
                 </div>
+                <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
             </div>
-            
-            <div class="card">
-                <h3>📊 Market Stats</h3>
-                <div class="stat">
-                    <span class="stat-label">Active Markets</span>
-                    <span class="stat-value" id="market-count">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Total Volume 24h</span>
-                    <span class="stat-value" id="total-volume">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Total Liquidity</span>
-                    <span class="stat-value" id="total-liquidity">--</span>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>⚠️ Anomalies</h3>
-                <div class="stat">
-                    <span class="stat-label">Detected</span>
-                    <span class="stat-value" id="anomaly-count">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Critical</span>
-                    <span class="stat-value" id="critical-count" style="color: #ff6b6b;">--</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Warning</span>
-                    <span class="stat-value" id="warning-count" style="color: #ffd93d;">--</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="markets-table">
-            <h2 style="padding: 20px 15px; color: #00d4ff; margin-bottom: 0;">Top Markets</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Market</th>
-                        <th>Bid</th>
-                        <th>Ask</th>
-                        <th>Spread</th>
-                        <th>24h Volume</th>
-                        <th>Liquidity</th>
-                    </tr>
-                </thead>
-                <tbody id="markets-tbody">
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #888;">Loading markets...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div style="margin-top: 40px;">
-            <h2 style="color: #00d4ff; margin-bottom: 20px;">Recent Anomalies</h2>
-            <div id="anomalies-list">
-                <div class="loading">Analyzing orderbooks...</div>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>PolyWhale - Polymarket Intelligence Platform</p>
-            <p class="update-time">Last updated: <span id="update-time">--:--:--</span></p>
-            <p style="margin-top: 20px; font-size: 0.9em;">
-                <a href="https://github.com/j-mastenbroek/openclawAlpha" style="color: #00d4ff;">GitHub Repository</a> • 
-                <a href="docs/api.html" style="color: #00d4ff;">API Docs</a>
-            </p>
         </div>
     </div>
-    
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Main Grid -->
+        <div class="main">
+            <!-- Left Panel: Categories -->
+            <div class="panel">
+                <div class="panel-header">📊 Categories</div>
+                <div class="panel-content" id="categories-panel">
+                    <div class="loading"><div class="spinner"></div> Loading...</div>
+                </div>
+            </div>
+
+            <!-- Center Panel: Markets -->
+            <div class="panel">
+                <div class="panel-header">🎯 Top Markets</div>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('all')">All</button>
+                    <button class="tab" onclick="switchTab('crypto')">Crypto</button>
+                    <button class="tab" onclick="switchTab('sports')">Sports</button>
+                    <button class="tab" onclick="switchTab('politics')">Politics</button>
+                </div>
+                <div class="panel-content" id="markets-panel">
+                    <div class="loading"><div class="spinner"></div> Loading...</div>
+                </div>
+            </div>
+
+            <!-- Right Panel: News & Whales -->
+            <div class="panel">
+                <div class="panel-header">📰 News & Whales</div>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('news')">News</button>
+                    <button class="tab" onclick="switchTab('whales')">Whales</button>
+                </div>
+                <div class="panel-content" id="news-whales-panel">
+                    <div class="loading"><div class="spinner"></div> Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-container">
+            <div class="chart-panel">
+                <div class="chart-title">📈 Markets by Category</div>
+                <canvas id="categoryChart"></canvas>
+            </div>
+            <div class="chart-panel">
+                <div class="chart-title">💰 Top Markets by Liquidity</div>
+                <canvas id="liquidityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Update timestamp
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('update-time').textContent = now.toLocaleTimeString();
+        // Global state
+        let allData = {};
+        let currentTab = 'all';
+        let marketChart = null;
+        let liquidityChart = null;
+
+        // Load data on page load
+        window.addEventListener('load', () => {
+            loadData();
+        });
+
+        async function loadData() {
+            try {
+                // Load market data
+                const marketResponse = await fetch('../data/live_data.json');
+                const marketData = await marketResponse.json();
+                allData.markets = marketData.markets || [];
+                allData.timestamp = marketData.timestamp;
+
+                // Load news data
+                try {
+                    const newsResponse = await fetch('../data/news.json');
+                    const newsData = await newsResponse.json();
+                    allData.news = newsData.articles || [];
+                } catch {
+                    allData.news = [];
+                }
+
+                // Load whale data
+                try {
+                    const whaleResponse = await fetch('../data/whales.json');
+                    const whaleData = await whaleResponse.json();
+                    allData.whales = whaleData.top_whales || [];
+                } catch {
+                    allData.whales = [];
+                }
+
+                renderAll();
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                document.getElementById('markets-panel').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load market data</p></div>';
+            }
         }
-        
-        updateTime();
-        setInterval(updateTime, 1000);
-        
-        // Placeholder data
-        document.getElementById('whale-count').textContent = '12';
-        document.getElementById('top-position').textContent = '$485k';
-        document.getElementById('whale-value').textContent = '$2.3M';
-        document.getElementById('market-count').textContent = '42';
-        document.getElementById('total-volume').textContent = '$18.5M';
-        document.getElementById('total-liquidity').textContent = '$142M';
-        document.getElementById('anomaly-count').textContent = '7';
-        document.getElementById('critical-count').textContent = '2';
-        document.getElementById('warning-count').textContent = '5';
+
+        function renderAll() {
+            updateHeader();
+            renderCategories();
+            renderMarkets();
+            renderNewsAndWhales();
+            renderCharts();
+        }
+
+        function updateHeader() {
+            const markets = allData.markets || [];
+            const categories = new Set(markets.map(m => m.category));
+
+            document.getElementById('market-count').textContent = markets.length.toLocaleString();
+            document.getElementById('category-count').textContent = categories.size;
+
+            if (allData.timestamp) {
+                const date = new Date(allData.timestamp);
+                document.getElementById('last-update').textContent = date.toLocaleTimeString();
+            }
+        }
+
+        function renderCategories() {
+            const markets = allData.markets || [];
+            const categoryCount = {};
+
+            markets.forEach(m => {
+                const cat = m.category || 'other';
+                categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+            });
+
+            const sorted = Object.entries(categoryCount).sort((a, b) => b[1] - a[1]);
+
+            const html = sorted.map(([cat, count]) => `
+                <div class="market-item">
+                    <div class="market-title">${cat.charAt(0).toUpperCase() + cat.slice(1)}</div>
+                    <div class="market-info">
+                        <div class="market-spread">${count} markets</div>
+                        <div class="market-volume">${(count / markets.length * 100).toFixed(1)}%</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('categories-panel').innerHTML = html || '<div class="empty-state">No data</div>';
+        }
+
+        function renderMarkets() {
+            let markets = allData.markets || [];
+
+            if (currentTab !== 'all') {
+                markets = markets.filter(m => m.category === currentTab);
+            }
+
+            // Take top 30 by volume + liquidity
+            const scored = markets.map(m => ({
+                ...m,
+                score: (m.volume_24h || 0) + (m.liquidity || 0)
+            })).sort((a, b) => b.score - a.score).slice(0, 30);
+
+            const html = scored.map(m => {
+                const categoryClass = `category-${m.category}`;
+                return `
+                    <div class="market-item">
+                        <div class="market-title">${m.title}</div>
+                        <div class="market-info">
+                            <span class="market-price">${m.bid.toFixed(3)} - ${m.ask.toFixed(3)}</span>
+                            <span class="market-spread">Spread: ${m.spread.toFixed(2)}%</span>
+                        </div>
+                        <div style="margin-top: 6px; font-size: 11px; color: #94a3b8;">
+                            Liquidity: $${(m.liquidity || 0).toLocaleString('en-US', {maximumFractionDigits: 0})}
+                        </div>
+                        <div class="category-badge ${categoryClass}">${m.category}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('markets-panel').innerHTML = html || '<div class="empty-state">No markets in this category</div>';
+        }
+
+        function renderNewsAndWhales() {
+            if (currentTab === 'whales' || document.querySelector('.tabs .tab.active').textContent === 'Whales') {
+                renderWhales();
+            } else {
+                renderNews();
+            }
+        }
+
+        function renderNews() {
+            const news = allData.news || [];
+
+            const html = news.slice(0, 8).map(item => `
+                <div class="news-item">
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-meta">
+                        <span class="news-source">${item.source}</span>
+                        <span>${item.category || 'News'}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('news-whales-panel').innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No news available</p></div>';
+        }
+
+        function renderWhales() {
+            const whales = allData.whales || [];
+
+            const html = whales.slice(0, 5).map(w => `
+                <div class="whale-item">
+                    <div class="whale-name">${w.nickname || 'Whale'}</div>
+                    <div class="whale-address">${w.address.slice(0, 10)}...${w.address.slice(-8)}</div>
+                    <div class="whale-stats">
+                        <div class="whale-stat">
+                            <div class="whale-stat-label">Trades (30d)</div>
+                            <div class="whale-stat-value">${w.trades_30d || 0}</div>
+                        </div>
+                        <div class="whale-stat">
+                            <div class="whale-stat-label">Win Rate</div>
+                            <div class="whale-stat-value">${((w.win_rate || 0) * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="whale-stat">
+                            <div class="whale-stat-label">Volume (30d)</div>
+                            <div class="whale-stat-value">$${((w.volume_30d || 0) / 1000000).toFixed(1)}M</div>
+                        </div>
+                        <div class="whale-stat">
+                            <div class="whale-stat-label">P&L (30d)</div>
+                            <div class="whale-stat-value" style="color: ${(w.pnl_30d || 0) >= 0 ? '#86efac' : '#f87171'};">
+                                $${((w.pnl_30d || 0) / 1000).toFixed(1)}K
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('news-whales-panel').innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">🐋</div><p>No whale data</p></div>';
+        }
+
+        function renderCharts() {
+            // Category distribution
+            const markets = allData.markets || [];
+            const categoryCount = {};
+
+            markets.forEach(m => {
+                const cat = m.category || 'other';
+                categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+            });
+
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            if (marketChart) marketChart.destroy();
+            marketChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categoryCount),
+                    datasets: [{
+                        data: Object.values(categoryCount),
+                        backgroundColor: [
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(148, 163, 184, 0.7)',
+                        ],
+                        borderColor: 'rgba(15, 23, 42, 0.8)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#cbd5e1' }
+                        }
+                    }
+                }
+            });
+
+            // Top markets by liquidity
+            const topLiquid = markets.filter(m => m.liquidity > 0).sort((a, b) => b.liquidity - a.liquidity).slice(0, 5);
+
+            const liquidityCtx = document.getElementById('liquidityChart').getContext('2d');
+            if (liquidityChart) liquidityChart.destroy();
+            liquidityChart = new Chart(liquidityCtx, {
+                type: 'bar',
+                data: {
+                    labels: topLiquid.map(m => m.title.substring(0, 20)),
+                    datasets: [{
+                        label: 'Liquidity ($)',
+                        data: topLiquid.map(m => m.liquidity / 1000000),
+                        backgroundColor: 'rgba(6, 182, 212, 0.7)',
+                        borderColor: 'rgba(6, 182, 212, 1)',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#cbd5e1' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        },
+                        y: {
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.textContent.toLowerCase().includes(tab) || 
+                    (tab === 'all' && t.textContent === 'All') ||
+                    (tab === 'news' && t.textContent === 'News') ||
+                    (tab === 'whales' && t.textContent === 'Whales')) {
+                    t.classList.add('active');
+                }
+            });
+
+            if (['crypto', 'sports', 'politics', 'all'].includes(tab)) {
+                renderMarkets();
+            } else if (tab === 'news' || tab === 'whales') {
+                renderNewsAndWhales();
+            }
+        }
+
+        function refreshData() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '↻ Refreshing...';
+            
+            setTimeout(() => {
+                loadData();
+                btn.disabled = false;
+                btn.textContent = '↻ Refresh';
+            }, 1000);
+        }
     </script>
 </body>
 </html>
