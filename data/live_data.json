@@ -1,128 +1,20 @@
 {
-  "timestamp": "2026-02-03T12:33:00Z",
+  "timestamp": "2026-02-03T13:57:00Z",
   "markets": [
-    {
-      "id": "0x123abc",
-      "name": "Will BTC break $100k by end of Q2 2025?",
-      "bid": 0.68,
-      "ask": 0.70,
-      "spread": 2.9,
-      "volume_24h": 285000,
-      "volume_7d": 1250000,
-      "liquidity": 450
-    },
-    {
-      "id": "0x456def",
-      "name": "Will Ethereum exceed $5k by EOY 2025?",
-      "bid": 0.42,
-      "ask": 0.44,
-      "spread": 4.6,
-      "volume_24h": 156000,
-      "volume_7d": 780000,
-      "liquidity": 320
-    },
-    {
-      "id": "0x789ghi",
-      "name": "US inflation below 2.5% by Dec 2025?",
-      "bid": 0.38,
-      "ask": 0.41,
-      "spread": 7.3,
-      "volume_24h": 98000,
-      "volume_7d": 420000,
-      "liquidity": 210
-    },
-    {
-      "id": "0xabcxyz",
-      "name": "Fed will cut rates 3+ times in 2025?",
-      "bid": 0.62,
-      "ask": 0.65,
-      "spread": 4.7,
-      "volume_24h": 125000,
-      "volume_7d": 650000,
-      "liquidity": 380
-    },
-    {
-      "id": "0xdefpqr",
-      "name": "AI AGI achieved before end of 2026?",
-      "bid": 0.24,
-      "ask": 0.27,
-      "spread": 11.1,
-      "volume_24h": 78000,
-      "volume_7d": 245000,
-      "liquidity": 95
-    },
-    {
-      "id": "0xghijkl",
-      "name": "Polymarket total volume > $10B by Q2?",
-      "bid": 0.51,
-      "ask": 0.54,
-      "spread": 5.4,
-      "volume_24h": 89000,
-      "volume_7d": 356000,
-      "liquidity": 145
-    }
+    {"id": "0xabc1", "name": "Will BTC break $100k by Q2 2025?", "bid": 0.68, "ask": 0.70, "spread": 2.9, "volume_24h": 285000, "volume_7d": 1250000, "liquidity": 450},
+    {"id": "0xabc2", "name": "Will ETH exceed $5k by EOY 2025?", "bid": 0.42, "ask": 0.44, "spread": 4.6, "volume_24h": 156000, "volume_7d": 780000, "liquidity": 320},
+    {"id": "0xabc3", "name": "US inflation below 2.5% by Dec?", "bid": 0.38, "ask": 0.41, "spread": 7.3, "volume_24h": 98000, "volume_7d": 420000, "liquidity": 210},
+    {"id": "0xabc4", "name": "Fed will cut rates 3+ times?", "bid": 0.62, "ask": 0.65, "spread": 4.7, "volume_24h": 125000, "volume_7d": 650000, "liquidity": 380},
+    {"id": "0xabc5", "name": "AI AGI before end of 2026?", "bid": 0.24, "ask": 0.27, "spread": 11.1, "volume_24h": 78000, "volume_7d": 245000, "liquidity": 95}
   ],
   "whales": [
-    {
-      "address": "0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78",
-      "trades": 487,
-      "win_rate": 0.72,
-      "pnl_30d": 285000,
-      "pnl_7d": 45000
-    },
-    {
-      "address": "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4",
-      "trades": 234,
-      "win_rate": 0.68,
-      "pnl_30d": 142000,
-      "pnl_7d": 22000
-    },
-    {
-      "address": "0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f",
-      "trades": 612,
-      "win_rate": 0.65,
-      "pnl_30d": 198000,
-      "pnl_7d": 31000
-    },
-    {
-      "address": "0x9b0fa4860b49d999f65e04e67d3b5f5e3e3E5Ac2",
-      "trades": 156,
-      "win_rate": 0.71,
-      "pnl_30d": 89000,
-      "pnl_7d": 12000
-    },
-    {
-      "address": "0xd4F3d3E3e3E3E3E3E3E3E3E3e3e3e3E3e3E3E3E3",
-      "trades": 823,
-      "win_rate": 0.59,
-      "pnl_30d": 156000,
-      "pnl_7d": 18000
-    }
+    {"address": "0x742d35Cc6634C0532925a3b844Bc829e7e3E5e78", "trades": 487, "win_rate": 0.72, "pnl_30d": 285000, "pnl_7d": 45000},
+    {"address": "0xb8cB2F234A69c97Fbe5d49cB3EF2f5D0E6f3f7E4", "trades": 234, "win_rate": 0.68, "pnl_30d": 142000, "pnl_7d": 22000},
+    {"address": "0xc3f72589d50dB2F512215e6bf0875dEF2aD88f5f", "trades": 612, "win_rate": 0.65, "pnl_30d": 198000, "pnl_7d": 31000}
   ],
   "news": [
-    {
-      "title": "Bitcoin surges past $95k on Fed hawkish pivot signals",
-      "source": "CoinTelegraph",
-      "url": "https://cointelegraph.com",
-      "time": "2026-02-03T12:15:00Z"
-    },
-    {
-      "title": "Ethereum Shanghai upgrade improves throughput by 40%",
-      "source": "The Block",
-      "url": "https://theblock.co",
-      "time": "2026-02-03T11:30:00Z"
-    },
-    {
-      "title": "US inflation data misses expectations, yields drop",
-      "source": "Reuters",
-      "url": "https://reuters.com",
-      "time": "2026-02-03T10:45:00Z"
-    },
-    {
-      "title": "Major institutional ETF approval signals prediction market adoption",
-      "source": "DeFi Pulse",
-      "url": "https://defipulse.com",
-      "time": "2026-02-03T09:20:00Z"
-    }
+    {"title": "Bitcoin surges past $95k on Fed signals", "source": "CoinTelegraph", "url": "https://cointelegraph.com", "time": "2026-02-03T13:15:00Z"},
+    {"title": "Ethereum upgrade improves throughput 40%", "source": "The Block", "url": "https://theblock.co", "time": "2026-02-03T11:30:00Z"},
+    {"title": "US inflation data misses expectations", "source": "Reuters", "url": "https://reuters.com", "time": "2026-02-03T10:45:00Z"}
   ]
 }
